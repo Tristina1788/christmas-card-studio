@@ -32,5 +32,7 @@ export const fontOptions = [
   },
 ];
 export function selectedFont(id: string | undefined, fallback: string) {
-  return fontOptions.find((font) => font.id === id)?.family ?? fallback;
+  return (
+    fontOptions.find((font) => font.id === (id ?? fallback))?.family ?? fallback
+  );
 }

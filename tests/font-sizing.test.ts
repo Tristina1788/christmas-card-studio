@@ -1,6 +1,7 @@
 import { it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { fontSizeLimits, requestedFontSize } from "../src/rendering/fontSizing";
+import { selectedFont } from "../src/rendering/fonts";
 import { fittedText } from "../src/rendering/cardRenderer";
 import type { Template } from "../src/config/templates";
 const templates = JSON.parse(
@@ -50,4 +51,11 @@ it("honors an oversized explicit size and selected font without fitting", () => 
     fittedText(ctx, field, "A long family name", 1000, '"Card Lora", serif'),
   ).toEqual({ size: 1000, fits: true });
   expect(ctx.font).toBe('1000px "Card Lora", serif');
+});
+
+it("loads bundled fonts when selected by template defaults as well as user choices", () => {
+  expect(selectedFont(undefined, "GreatVibes")).toBe(
+    selectedFont("GreatVibes", "Georgia"),
+  );
+  expect(selectedFont(undefined, "Lora")).toBe(selectedFont("Lora", "Georgia"));
 });

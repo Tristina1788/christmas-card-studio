@@ -178,33 +178,38 @@ export function TemplateGallery({
           </div>
         )}
         <div className="template-grid">
-          {templates.map((t) => (
-            <article
-              className="template-card"
-              key={t.id}
-              data-testid={`template-${t.id}`}
-            >
-              <div className="artwork-wrap">
-                <TemplateArtwork template={t} />
-                <span className="template-format">5 × 7 IN</span>
-              </div>
-              <div className="template-card-info">
-                <span className="tiny-label">
-                  DESIGN {t.id}{" "}
-                  {t.status === "approved" ? "· READY TO PERSONALIZE" : ""}
-                </span>
-                <h3>{t.name}</h3>
-                <p>{t.description}</p>
-                <button
-                  className="text-button"
-                  onClick={() => onSelect(t.id)}
-                  aria-label={`Personalize ${t.name}`}
-                >
-                  Personalize This Card <span aria-hidden="true">→</span>
-                </button>
-              </div>
-            </article>
-          ))}
+          {[...templates]
+            .sort(
+              (a, b) =>
+                Number(b.featured ?? false) - Number(a.featured ?? false),
+            )
+            .map((t) => (
+              <article
+                className="template-card"
+                key={t.id}
+                data-testid={`template-${t.id}`}
+              >
+                <div className="artwork-wrap">
+                  <TemplateArtwork template={t} />
+                  <span className="template-format">5 × 7 IN</span>
+                </div>
+                <div className="template-card-info">
+                  <span className="tiny-label">
+                    {t.featured ? "NEW · " : ""}DESIGN {t.id}{" "}
+                    {t.status === "approved" ? "· READY TO PERSONALIZE" : ""}
+                  </span>
+                  <h3>{t.name}</h3>
+                  <p>{t.description}</p>
+                  <button
+                    className="text-button"
+                    onClick={() => onSelect(t.id)}
+                    aria-label={`Personalize ${t.name}`}
+                  >
+                    Personalize This Card <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+              </article>
+            ))}
         </div>
       </section>
       <section className="closing-note">

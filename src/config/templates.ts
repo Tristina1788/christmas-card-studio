@@ -45,6 +45,7 @@ export const templateSchema = z
     id: z.string().regex(/^\d{2}$/),
     name: z.string(),
     description: z.string(),
+    featured: z.boolean().optional(),
     palette: z.enum([
       "cranberry",
       "sage",

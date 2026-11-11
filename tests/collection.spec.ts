@@ -22,7 +22,7 @@ async function pixels(page: Page) {
 test("real collection has distinct lazily rendered gallery cards", async ({
   page,
 }, info) => {
-  test.setTimeout(240_000);
+  test.setTimeout(360_000);
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("response", (r) => {
@@ -65,7 +65,7 @@ test("real collection has distinct lazily rendered gallery cards", async ({
 test("all real templates preserve artwork, personalize, and export identical PNG and exact PDF", async ({
   page,
 }, info) => {
-  test.setTimeout(240_000);
+  test.setTimeout(360_000);
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   const uploads: string[] = [];

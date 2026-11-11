@@ -80,7 +80,7 @@ describe("active collection loading", () => {
       async () => new Response(JSON.stringify(active), { status: 200 }),
     );
     const templates = await loadTemplates();
-    expect(templates).toHaveLength(16);
+    expect(templates).toHaveLength(20);
     expect(templates.slice(0, 3).map((t) => t.name)).toEqual([
       "Botanical Noel",
       "Cranberry Garland",
