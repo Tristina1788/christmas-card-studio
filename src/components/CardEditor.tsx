@@ -232,7 +232,7 @@ export function CardEditor({
               >
                 {t.photoSlots.map((s, i) => (
                   <option key={s.id} value={s.id}>
-                    Photo {i + 1}
+                    {s.label ?? `Photo ${i + 1}`}
                   </option>
                 ))}
               </select>

@@ -1,5 +1,6 @@
 import type { PhotoSlot, Template, TextField } from "../config/templates";
 import { photoGeometry, initialCrop, type Crop } from "./photoCrop";
+import { artworkPlacement } from "./artworkPlacement";
 import type { Artwork } from "./assets";
 export type Values = Record<string, string>;
 export interface RenderInput {
@@ -56,14 +57,38 @@ export function renderCard(canvas: HTMLCanvasElement, input: RenderInput) {
   ctx.clearRect(0, 0, t.width, t.height);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(artwork.background, 0, 0, t.width, t.height);
+  const placement = artworkPlacement(t, artwork.background);
+  ctx.fillStyle = t.paperColor ?? "#faf8f2";
+  ctx.fillRect(0, 0, t.width, t.height);
+  ctx.drawImage(
+    artwork.background,
+    placement.x,
+    placement.y,
+    placement.width,
+    placement.height,
+  );
   for (const slot of t.photoSlots) {
     const photo = photos[slot.id];
-    if (!photo) continue;
-    const g = photoGeometry(photo, slot, crops[slot.id] ?? initialCrop());
+    if (!photo && !slot.matteColor) continue;
+    if (slot.matteColor) {
+      ctx.fillStyle = slot.matteColor;
+      ctx.fillRect(slot.x, slot.y, slot.width, slot.height);
+    }
+    const g = photo
+      ? photoGeometry(photo, slot, crops[slot.id] ?? initialCrop())
+      : undefined;
     ctx.save();
     clipSlot(ctx, slot);
-    ctx.drawImage(photo, g.x, g.y, g.width, g.height);
+    if (photo && g) ctx.drawImage(photo, g.x, g.y, g.width, g.height);
+    else {
+      ctx.fillStyle = "#d0d0ce";
+      ctx.fillRect(slot.x, slot.y, slot.width, slot.height);
+    }
+    if (slot.frameColor) {
+      ctx.strokeStyle = slot.frameColor;
+      ctx.lineWidth = 4;
+      ctx.stroke();
+    }
     ctx.restore();
   }
   if (artwork.foreground)

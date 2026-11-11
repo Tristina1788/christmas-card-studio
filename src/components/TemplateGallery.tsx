@@ -42,33 +42,58 @@ function GalleryCard({
   useEffect(() => {
     let active = true;
     let photo: ImageBitmap | undefined;
-    Promise.all([
-      loadArtwork(template),
-      loadImage(template.galleryPhoto!),
-      prepareFonts(template),
-    ])
-      .then(async ([artwork, image]) => {
-        photo = await createImageBitmap(image);
-        if (!active) {
-          photo.close();
-          return;
-        }
-        if (canvas.current)
-          renderCard(canvas.current, {
-            template,
-            artwork,
-            photos: Object.fromEntries(
-              template.photoSlots.map((s) => [s.id, photo]),
-            ),
-            crops: {},
-            values: {},
+    const target = canvas.current;
+    if (!target) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        Promise.all([
+          loadArtwork(template),
+          loadImage(template.galleryPhoto!),
+          prepareFonts(template),
+        ])
+          .then(async ([artwork, image]) => {
+            photo = await createImageBitmap(image);
+            if (!active) {
+              photo.close();
+              return;
+            }
+            const full = document.createElement("canvas");
+            renderCard(full, {
+              template,
+              artwork,
+              photos: Object.fromEntries(
+                template.photoSlots.map((slot) => [slot.id, photo]),
+              ),
+              crops: Object.fromEntries(
+                template.photoSlots.map((slot) => [
+                  slot.id,
+                  { zoom: 1, x: 0, y: 0.25 },
+                ]),
+              ),
+              values: {},
+            });
+            const ctx = target.getContext("2d");
+            if (!ctx) throw new Error("Preview unavailable");
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = "high";
+            ctx.drawImage(full, 0, 0, target.width, target.height);
+            target.dataset.rendered = "true";
+            full.width = 1;
+            full.height = 1;
+            photo.close();
+          })
+          .catch(() => {
+            if (active) failure.current();
           });
-      })
-      .catch(() => {
-        if (active) failure.current();
-      });
+      },
+      { rootMargin: "300px" },
+    );
+    observer.observe(target);
     return () => {
       active = false;
+      observer.disconnect();
       photo?.close();
     };
   }, [template]);
@@ -77,8 +102,8 @@ function GalleryCard({
       <canvas
         className="template-image"
         ref={canvas}
-        width={1500}
-        height={2100}
+        width={600}
+        height={840}
         role="img"
         aria-label={`${template.name} card with an illustrative sample family photo`}
       />
