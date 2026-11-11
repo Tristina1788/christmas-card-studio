@@ -50,6 +50,7 @@ export const templateSchema = z
     ]),
     background: assetPath,
     foreground: assetPath.nullable(),
+    galleryPhoto: assetPath.optional(),
     width: z.literal(1500),
     height: z.literal(2100),
     printWidth: z.literal(5),
@@ -125,11 +126,12 @@ export async function loadTemplates(): Promise<Template[]> {
     );
   const data = z
     .array(templateSchema)
-    .length(10)
+    .min(1)
+    .max(100)
     .parse(await response.json());
   if (
-    new Set(data.map((t) => t.id)).size !== 10 ||
-    new Set(data.map((t) => t.background)).size !== 10
+    new Set(data.map((t) => t.id)).size !== data.length ||
+    new Set(data.map((t) => t.background)).size !== data.length
   )
     throw new Error("Each design needs a unique ID and original artwork file.");
   return data;

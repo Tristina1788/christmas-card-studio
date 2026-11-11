@@ -2,7 +2,7 @@
 
 ## Preserve the original
 
-Use owner-supplied originals. Never generate replacements, redraw watercolor details, remove backgrounds automatically, or paint over embedded greetings. File paths are local under `/templates/`; external image URLs are rejected to avoid tainted export canvases and third-party photo traffic.
+Use owner-supplied originals for their existing designs. The owner has separately authorized the three new AI-generated designs documented in NEW_COLLECTION.md. Never represent generated artwork as an owner-supplied original, redraw approved watercolor details, remove backgrounds automatically, or paint over embedded greetings. File paths are local under `/templates/`; external image URLs are rejected to avoid tainted export canvases and third-party photo traffic.
 
 Each template has its own image path. The production canvas is **1500 × 2100**; geometry is measured in that design coordinate system. Native image sizes can differ if the 5:7 aspect ratio matches. Convert measured source coordinates with `x * 1500 / sourceWidth` and `y * 2100 / sourceHeight`. Lower-resolution source files trigger a warning, not a promise of restored detail.
 
@@ -61,7 +61,7 @@ The schema rejects out-of-bounds geometry, invalid polygon points, duplicate reg
 
 ## Future designs
 
-Add a new manifest entry with a unique ID and image path, its own original art, and measured slots/text. Update the collection count constraint in `loadTemplates`, gallery collection count, and gallery test assertions when expanding beyond ten. The renderer/editor do not need separate implementations. Fully editable greetings should only be enabled in new text-free artwork with a verified `greeting` field. No greeting field is configured for the ten flattened originals.
+Add a new manifest entry with a unique ID and image path, its own original art, and measured slots/text. The collection loader and gallery count adapt automatically. Add test coverage for each newly approved design. The renderer/editor do not need separate implementations. Fully editable greetings should only be enabled in new text-free artwork with a verified `greeting` field. The new text-free generated designs have editable greeting fields. No greeting field is configured for the ten pending flattened originals.
 
 ## Per-template release checklist
 
