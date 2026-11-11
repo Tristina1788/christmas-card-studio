@@ -9,11 +9,11 @@ const templates = JSON.parse(
 const field = templates
   .find((t) => t.id === "22")!
   .textFields.find((f) => f.id === "family")!;
-it("bounds selected sizes to the verified text region and handles stale preferences", () => {
+it("accepts sizes beyond the slider and handles invalid preferences", () => {
   const limits = fontSizeLimits(field);
-  expect(limits.max).toBeLessThanOrEqual(field.height);
-  expect(requestedFontSize(field, 9999)).toBe(limits.max);
-  expect(requestedFontSize(field, -5)).toBe(field.minSize);
+  expect(limits.max).toBeGreaterThan(field.height);
+  expect(requestedFontSize(field, 9999)).toBe(9999);
+  expect(requestedFontSize(field, -5)).toBe(1);
   expect(requestedFontSize(field, NaN)).toBe(field.fontSize);
 });
 it("uses the customer-selected size when the name fits", () => {
@@ -32,16 +32,22 @@ it("fits long names without dropping below the configured minimum", () => {
       return { width: (parseFloat(this.font) * text.length) / 2 };
     },
   } as unknown as CanvasRenderingContext2D;
-  const result = fittedText(
-    ctx,
-    field,
-    "The Anderson and Williams Family",
-    fontSizeLimits(field).max,
-  );
+  const result = fittedText(ctx, field, "The Anderson and Williams Family");
   expect(result.fits).toBe(true);
-  expect(result.size).toBeLessThan(fontSizeLimits(field).max);
+  expect(result.size).toBeLessThan(field.fontSize);
   expect(result.size).toBeGreaterThanOrEqual(field.minSize);
   expect(
     ctx.measureText("The Anderson and Williams Family").width,
   ).toBeLessThanOrEqual(field.width);
+});
+
+it("honors an oversized explicit size and selected font without fitting", () => {
+  const ctx = {
+    font: "",
+    measureText: () => ({ width: 99999 }),
+  } as unknown as CanvasRenderingContext2D;
+  expect(
+    fittedText(ctx, field, "A long family name", 1000, '"Card Lora", serif'),
+  ).toEqual({ size: 1000, fits: true });
+  expect(ctx.font).toBe('1000px "Card Lora", serif');
 });

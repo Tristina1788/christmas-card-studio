@@ -27,7 +27,7 @@ export function CardPreview({
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   useEffect(() => {
     let active = true;
-    prepareFonts(input.template)
+    prepareFonts(input.template, input.fontFamilies)
       .then(() => {
         if (active && canvas.current)
           onResult(renderCard(canvas.current, input));

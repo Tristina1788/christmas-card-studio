@@ -84,7 +84,9 @@ test("all real templates preserve artwork, personalize, and export identical PNG
       ).toBeDisabled();
     for (const slot of t.photoSlots) {
       if (t.photoSlots.length > 1)
-        await page.getByRole("combobox").selectOption(slot.id);
+        await page
+          .getByRole("combobox", { name: "Photo opening", exact: true })
+          .selectOption(slot.id);
       await page
         .getByLabel("Upload family photo")
         .setInputFiles("public/templates/sample-family.png");
@@ -143,7 +145,9 @@ test("all real templates preserve artwork, personalize, and export identical PNG
     }
     for (const slot of t.photoSlots) {
       if (t.photoSlots.length > 1)
-        await page.getByRole("combobox").selectOption(slot.id);
+        await page
+          .getByRole("combobox", { name: "Photo opening", exact: true })
+          .selectOption(slot.id);
       await page.getByLabel("Upload family photo").setInputFiles({
         name: "boundary-check.png",
         mimeType: "image/png",

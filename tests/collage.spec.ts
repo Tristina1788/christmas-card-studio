@@ -24,14 +24,14 @@ test("collage keeps four uploaded photos independent and requires every opening"
     [160, 70, 180],
   ];
   for (let i = 0; i < template.photoSlots.length; i++) {
-    await page.getByRole("combobox").selectOption(template.photoSlots[i].id);
     await page
-      .getByLabel("Upload family photo")
-      .setInputFiles({
-        name: `photo-${i}.png`,
-        mimeType: "image/png",
-        buffer: image(1200, 900, colors[i]),
-      });
+      .getByRole("combobox", { name: "Photo opening", exact: true })
+      .selectOption(template.photoSlots[i].id);
+    await page.getByLabel("Upload family photo").setInputFiles({
+      name: `photo-${i}.png`,
+      mimeType: "image/png",
+      buffer: image(1200, 900, colors[i]),
+    });
     await expect(
       page.getByRole("button", { name: "Replace photo" }),
     ).toBeVisible();
@@ -63,14 +63,14 @@ test("collage keeps four uploaded photos independent and requires every opening"
         template.photoSlots,
       );
   await expect.poll(centers).toEqual(colors);
-  await page.getByRole("combobox").selectOption("detail-2");
   await page
-    .getByLabel("Upload family photo")
-    .setInputFiles({
-      name: "replacement.png",
-      mimeType: "image/png",
-      buffer: image(1200, 900, [210, 170, 20]),
-    });
+    .getByRole("combobox", { name: "Photo opening", exact: true })
+    .selectOption("detail-2");
+  await page.getByLabel("Upload family photo").setInputFiles({
+    name: "replacement.png",
+    mimeType: "image/png",
+    buffer: image(1200, 900, [210, 170, 20]),
+  });
   await expect(
     page.getByRole("button", { name: "Replace photo" }),
   ).toBeVisible();

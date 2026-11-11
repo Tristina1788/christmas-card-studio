@@ -3,6 +3,7 @@ import { photoGeometry, initialCrop, type Crop } from "./photoCrop";
 import { artworkPlacement } from "./artworkPlacement";
 import type { Artwork } from "./assets";
 import { requestedFontSize, type FontSizes } from "./fontSizing";
+import { selectedFont, type FontFamilies } from "./fonts";
 export interface RenderResult {
   errors: string[];
   fontSizes: FontSizes;
@@ -15,20 +16,27 @@ export interface RenderInput {
   crops: Record<string, Crop>;
   values: Values;
   fontSizes?: FontSizes;
+  fontFamilies?: FontFamilies;
 }
 export function fittedText(
   ctx: CanvasRenderingContext2D,
   field: TextField,
   value: string,
   requested?: number,
+  family = field.fontFamily,
 ) {
   let size = requestedFontSize(field, requested);
+  // Explicit sizes belong to the customer: never shrink them back to the old box.
+  if (requested !== undefined && Number.isFinite(requested) && requested > 0) {
+    ctx.font = `${size}px ${family}`;
+    return { size, fits: true };
+  }
   while (size > field.minSize) {
-    ctx.font = `${size}px ${field.fontFamily}`;
+    ctx.font = `${size}px ${family}`;
     if (ctx.measureText(value).width <= field.width) break;
     size = Math.max(field.minSize, size - 1);
   }
-  ctx.font = `${size}px ${field.fontFamily}`;
+  ctx.font = `${size}px ${family}`;
   return { size, fits: ctx.measureText(value).width <= field.width };
 }
 export function clipSlot(ctx: CanvasRenderingContext2D, slot: PhotoSlot) {
@@ -45,11 +53,18 @@ export function clipSlot(ctx: CanvasRenderingContext2D, slot: PhotoSlot) {
   else ctx.rect(slot.x, slot.y, slot.width, slot.height);
   ctx.clip();
 }
-export async function prepareFonts(template: Template) {
+export async function prepareFonts(
+  template: Template,
+  fontFamilies: FontFamilies = {},
+) {
   await Promise.all(
     template.textFields
       .filter((f) => f.visible)
-      .map((f) => document.fonts.load(`${f.fontSize}px ${f.fontFamily}`)),
+      .map((f) =>
+        document.fonts.load(
+          `${f.fontSize}px ${selectedFont(fontFamilies[f.id], f.fontFamily)}`,
+        ),
+      ),
   );
   await document.fonts.ready;
 }
@@ -111,15 +126,24 @@ export function renderCard(
       errors.push(`Enter ${field.label.toLowerCase()}.`);
     if (!value) continue;
     ctx.save();
-    const fit = fittedText(ctx, field, value, input.fontSizes?.[field.id]);
+    const customSize = input.fontSizes?.[field.id];
+    const fit = fittedText(
+      ctx,
+      field,
+      value,
+      customSize,
+      selectedFont(input.fontFamilies?.[field.id], field.fontFamily),
+    );
     if (fit.fits) fontSizes[field.id] = fit.size;
     if (!fit.fits)
       errors.push(
         `${field.label} is too wide. Please shorten it to fit the safe text area.`,
       );
-    ctx.beginPath();
-    ctx.rect(field.x, field.y, field.width, field.height);
-    ctx.clip();
+    if (customSize === undefined) {
+      ctx.beginPath();
+      ctx.rect(field.x, field.y, field.width, field.height);
+      ctx.clip();
+    }
     ctx.fillStyle = field.color;
     ctx.textAlign = field.align;
     ctx.textBaseline = "middle";
@@ -136,7 +160,7 @@ export function renderCard(
   return { errors, fontSizes };
 }
 export async function exportCanvas(input: RenderInput) {
-  await prepareFonts(input.template);
+  await prepareFonts(input.template, input.fontFamilies);
   if (
     input.template.status !== "approved" ||
     input.template.photoSlots.some((s) => !input.photos[s.id])

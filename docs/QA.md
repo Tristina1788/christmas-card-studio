@@ -59,3 +59,9 @@ Original generated artwork provides approximately 212–216 ppi at 5 × 7 inches
 ## Font-size controls update
 
 User-selected sizes now apply to family names, optional years, and independently editable greetings. Embedded artwork greetings are preserved. ESLint, TypeScript, the production build, and 94 unit tests passed. The focused editor/crop/gallery/font regression run passed 40 browser tests, with two intentional non-touch skips. New checks verify larger text changes pixels only inside text boxes, resized PNG/preview identity, exact PDF page size, keyboard control, per-design size persistence, both reset actions, long-name fitted-size feedback, and invalid-overflow feedback. Full collection regressions also run in CI. See [font-size guide and screenshots](FONT_SIZES.md).
+
+## Font selection and unrestricted sizes
+
+Added six font options and a numeric point-size field without a fixed maximum. Explicit sizes bypass automatic fitting and the original text-box clip; defaults retain fitting. Preview and exports await selected fonts. Lora and Great Vibes are self-hosted with OFL licenses. See [the updated guide](FONT_SIZES.md).
+
+Lint, TypeScript, production build, and 95 unit tests pass. Browser checks cover 48 pt year text beyond the old region, font changes, preview/PNG equality, PDF dimensions, sizes above 120 pt, per-card persistence, and Start Over on desktop/tablet/mobile.

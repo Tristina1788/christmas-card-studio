@@ -11,6 +11,7 @@ export default function App() {
     crops: {},
     values: {},
     fontSizes: {},
+    fontFamilies: {},
   });
   const heading = useRef<HTMLDivElement>(null);
   useEffect(() => {

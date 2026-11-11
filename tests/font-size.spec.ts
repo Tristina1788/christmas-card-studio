@@ -153,12 +153,6 @@ test("long names show actual fitted size and artwork greetings have no size cont
   await page
     .getByLabel("Family name", { exact: true })
     .fill("The Anderson and Williams Family");
-  const family = page.getByRole("slider", {
-    name: "Family name font size",
-    exact: true,
-  });
-  await family.focus();
-  await page.keyboard.press("End");
   await expect(page.getByText(/^Auto-fitted to/)).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Download PNG" }),
@@ -185,6 +179,94 @@ test("long names show actual fitted size and artwork greetings have no size cont
   });
   await greeting.focus();
   await page.keyboard.press("End");
-  await expect(greeting).toHaveValue("26.4");
-  await expect(greeting).toHaveAttribute("aria-valuetext", "26.4 points");
+  await expect(greeting).toHaveValue("120");
+  await expect(greeting).toHaveAttribute("aria-valuetext", "120.0 points");
+});
+
+test("fonts and unrestricted year size print exactly, persist per design, and reset", async ({
+  page,
+}, info) => {
+  await open(page);
+  const yearSize = page.getByRole("spinbutton", {
+    name: "Year font size in points",
+    exact: true,
+  });
+  const yearFont = page.getByRole("combobox", {
+    name: "Year font",
+    exact: true,
+  });
+  const familyFont = page.getByRole("combobox", {
+    name: "Family name font",
+    exact: true,
+  });
+  await expect(yearSize).not.toHaveAttribute("max");
+  await yearSize.fill("48");
+  await yearSize.blur();
+  await expect(
+    page.getByRole("slider", { name: "Year font size", exact: true }),
+  ).toHaveAttribute("aria-valuetext", "48.0 points");
+  const serif = await canvas(page);
+  await yearFont.selectOption("Lora");
+  await familyFont.selectOption("GreatVibes");
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          document.fonts.check('42px "Card Lora"') &&
+          document.fonts.check('64px "Card Great Vibes"'),
+      ),
+    )
+    .toBe(true);
+  const styled = await canvas(page);
+  expect(Buffer.compare(serif.data, styled.data)).not.toBe(0);
+  // A 48pt year extends outside its old 100-design-pixel box, without clipping.
+  const yearField = woods.textFields.find((field) => field.id === "year")!;
+  const baseline = yearField.y + yearField.height / 2;
+  let aboveOldBox = 0;
+  // Compare the enlarged year with the same font at the original size.
+  await yearSize.fill("10.08");
+  await yearSize.blur();
+  const small = await canvas(page);
+  for (let y = Math.floor(baseline - 180); y < yearField.y; y++) {
+    for (let x = yearField.x; x < yearField.x + yearField.width; x++) {
+      const index = (y * 1500 + x) * 4;
+      if (
+        [0, 1, 2].some((c) => styled.data[index + c] !== small.data[index + c])
+      )
+        aboveOldBox++;
+    }
+  }
+  expect(aboveOldBox).toBeGreaterThan(100);
+  await yearSize.fill("48");
+  await yearSize.blur();
+  const printed = await canvas(page);
+  const png = PNG.sync.read(await download(page, "Download PNG"));
+  expect(Buffer.compare(png.data, printed.data)).toBe(0);
+  const pdf = await PDFDocument.load(await download(page, "Download PDF"));
+  expect(pdf.getPage(0).getSize()).toEqual({ width: 360, height: 504 });
+  await page.evaluate(() => scrollTo(0, 0));
+  await page.screenshot({
+    path: info.outputPath("font-and-large-year.png"),
+    fullPage: true,
+  });
+  // Numeric input can exceed the slider's normal 120pt range.
+  await yearSize.fill("150");
+  await yearSize.blur();
+  await expect(yearSize).toHaveValue("150");
+  await expect(
+    page.getByRole("button", { name: "Download PNG" }),
+  ).toBeEnabled();
+  await page.getByRole("button", { name: /Back to collection/ }).click();
+  await select(page, "Holly & Pine");
+  await expect(yearFont).toHaveValue("Georgia");
+  await page.getByRole("button", { name: /Back to collection/ }).click();
+  await select(page, "Christmas in the Woods");
+  await expect(yearSize).toHaveValue("150");
+  await expect(yearFont).toHaveValue("Lora");
+  await expect(familyFont).toHaveValue("GreatVibes");
+  await page.getByRole("button", { name: "Start Over", exact: true }).click();
+  await page.getByRole("button", { name: "Yes, start over" }).click();
+  await expect(yearSize).toHaveValue("10.08");
+  await expect(yearFont).toHaveValue("Georgia");
+  await expect(familyFont).toHaveValue("Georgia");
 });
