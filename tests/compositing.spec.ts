@@ -11,13 +11,11 @@ async function select(page: Page) {
   ).toBeVisible();
 }
 async function addPhoto(page: Page) {
-  await page
-    .getByLabel("Upload family photo")
-    .setInputFiles({
-      name: "photo.png",
-      mimeType: "image/png",
-      buffer: image(1600, 1600, [230, 110, 30]),
-    });
+  await page.getByLabel("Upload family photo").setInputFiles({
+    name: "photo.png",
+    mimeType: "image/png",
+    buffer: image(1600, 1600, [230, 110, 30]),
+  });
   await expect(
     page.getByRole("button", { name: "Replace photo" }),
   ).toBeVisible();
@@ -98,7 +96,9 @@ test("multiple openings keep independent photos and require every slot", async (
   await expect(
     page.getByRole("button", { name: "Download PNG" }),
   ).toBeDisabled();
-  await page.getByRole("combobox").selectOption("second");
+  await page
+    .getByRole("combobox", { name: "Photo opening", exact: true })
+    .selectOption("second");
   await expect(
     page.getByRole("button", { name: "Choose your photo" }),
   ).toBeVisible();

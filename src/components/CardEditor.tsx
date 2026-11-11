@@ -13,11 +13,13 @@ import { CardPreview } from "./CardPreview";
 import { PhotoControls } from "./PhotoControls";
 import { PersonalizationPanel } from "./PersonalizationPanel";
 import { DownloadPanel } from "./DownloadPanel";
+import type { FontFamilies } from "../rendering/fonts";
 export interface Session {
   photos: Record<string, ImageBitmap | undefined>;
   crops: Record<string, Crop>;
   values: Values;
   fontSizes: FontSizes;
+  fontFamilies: FontFamilies;
 }
 export function CardEditor({
   template: t,
@@ -82,12 +84,23 @@ export function CardEditor({
   const fontSizes = useMemo(
     () =>
       Object.fromEntries(
-        t.textFields.map((field) => [
-          field.id,
-          session.fontSizes?.[`${t.id}:${field.id}`] ?? field.fontSize,
-        ]),
+        t.textFields
+          .filter(
+            (field) => session.fontSizes?.[`${t.id}:${field.id}`] !== undefined,
+          )
+          .map((field) => [field.id, session.fontSizes[`${t.id}:${field.id}`]]),
       ),
     [t, session.fontSizes],
+  );
+  const fontFamilies = useMemo(
+    () =>
+      Object.fromEntries(
+        t.textFields.map((field) => [
+          field.id,
+          session.fontFamilies?.[`${t.id}:${field.id}`] ?? field.fontFamily,
+        ]),
+      ),
+    [t, session.fontFamilies],
   );
   const input = useMemo(
     () =>
@@ -99,9 +112,10 @@ export function CardEditor({
             crops,
             values: session.values,
             fontSizes,
+            fontFamilies,
           }
         : undefined,
-    [t, art, session.photos, crops, session.values, fontSizes],
+    [t, art, session.photos, crops, session.values, fontSizes, fontFamilies],
   );
   const onResult = useCallback(({ errors, fontSizes }: RenderResult) => {
     setRenderErrors((previous) =>
@@ -247,6 +261,7 @@ export function CardEditor({
             <label className="text-control">
               Photo opening
               <select
+                aria-label="Photo opening"
                 value={slotId}
                 disabled={!!busy || pending}
                 onChange={(e) => setSlotId(e.target.value)}
@@ -271,6 +286,16 @@ export function CardEditor({
             template={t}
             values={session.values}
             fontSizes={fontSizes}
+            fontFamilies={fontFamilies}
+            onFontFamily={(id, family) =>
+              onChange({
+                ...session,
+                fontFamilies: {
+                  ...session.fontFamilies,
+                  [`${t.id}:${id}`]: family,
+                },
+              })
+            }
             effectiveFontSizes={effectiveFontSizes}
             onFontSize={(id, size) =>
               onChange({
@@ -364,7 +389,13 @@ export function CardEditor({
             className="button"
             onClick={() => {
               Object.values(session.photos).forEach((p) => p?.close());
-              onChange({ photos: {}, crops: {}, values: {}, fontSizes: {} });
+              onChange({
+                photos: {},
+                crops: {},
+                values: {},
+                fontSizes: {},
+                fontFamilies: {},
+              });
               setError("");
               setMessage("Your card has been reset.");
               setResetConfirm(false);

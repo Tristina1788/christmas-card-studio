@@ -1,3 +1,9 @@
+import { useState } from "react";
+import {
+  fontOptions,
+  selectedFont,
+  type FontFamilies,
+} from "../rendering/fonts";
 import type { Template } from "../config/templates";
 import type { Values } from "../rendering/cardRenderer";
 import {
@@ -11,6 +17,8 @@ interface Props {
   template: Template;
   values: Values;
   fontSizes: FontSizes;
+  fontFamilies: FontFamilies;
+  onFontFamily: (id: string, family: string) => void;
   effectiveFontSizes: FontSizes;
   onValue: (id: string, value: string) => void;
   onFontSize: (id: string, size: number) => void;
@@ -22,6 +30,8 @@ export function PersonalizationPanel({
   template,
   values,
   fontSizes,
+  fontFamilies,
+  onFontFamily,
   effectiveFontSizes,
   onValue,
   onFontSize,
@@ -70,6 +80,34 @@ export function PersonalizationPanel({
                   {field.maxLength}
                 </small>
               </label>
+              <label className="text-control">
+                <span>Font</span>
+                <select
+                  aria-label={`${field.label} font`}
+                  value={fontFamilies[field.id] ?? field.fontFamily}
+                  disabled={disabled}
+                  style={{
+                    fontFamily: selectedFont(
+                      fontFamilies[field.id],
+                      field.fontFamily,
+                    ),
+                  }}
+                  onChange={(e) => onFontFamily(field.id, e.target.value)}
+                >
+                  {fontOptions.map((font) => (
+                    <option key={font.id} value={font.id}>
+                      {font.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <SizeInput
+                key={field.id}
+                label={`${field.label} font size in points`}
+                size={size}
+                disabled={disabled}
+                onSize={(size) => onFontSize(field.id, size)}
+              />
               <label
                 className="range-control font-size-control"
                 htmlFor={`font-size-${template.id}-${field.id}`}
@@ -85,7 +123,7 @@ export function PersonalizationPanel({
                   aria-valuetext={`${printPoints(size)} points`}
                   aria-describedby={fitNoteId}
                   min={printPointValue(limits.min)}
-                  max={printPointValue(limits.max)}
+                  max={printPointValue(Math.max(limits.max, size))}
                   step={0.24}
                   value={printPointValue(size)}
                   disabled={disabled}
@@ -100,7 +138,7 @@ export function PersonalizationPanel({
               <p id={fitNoteId} className="font-fit-note" aria-live="polite">
                 {effective !== undefined && effective < size - 0.5
                   ? `Auto-fitted to ${printPoints(effective)} pt to keep your text inside the card.`
-                  : "Adjust the size to suit your card."}
+                  : "Your chosen size prints as shown. Large text can overlap the design or extend past the card edges."}
               </p>
             </div>
           );
@@ -126,5 +164,43 @@ export function PersonalizationPanel({
           : "The design’s original greeting is preserved exactly as part of the artwork."}
       </p>
     </section>
+  );
+}
+
+function SizeInput({
+  label,
+  size,
+  disabled,
+  onSize,
+}: {
+  label: string;
+  size: number;
+  disabled: boolean;
+  onSize: (size: number) => void;
+}) {
+  const [draft, setDraft] = useState<string | null>(null);
+  return (
+    <label className="text-control size-number">
+      <span>Size (pt)</span>
+      <input
+        type="number"
+        aria-label={label}
+        min={0.24}
+        step="any"
+        value={draft ?? printPointValue(size)}
+        disabled={disabled}
+        onChange={(event) => {
+          setDraft(event.target.value);
+          const points = Number(event.target.value);
+          if (
+            Number.isFinite(points) &&
+            points >= 0.24 &&
+            Number.isFinite((points * 300) / 72)
+          )
+            onSize((points * 300) / 72);
+        }}
+        onBlur={() => setDraft(null)}
+      />
+    </label>
   );
 }

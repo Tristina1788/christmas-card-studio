@@ -1,34 +1,32 @@
-# Font-size controls
+# Fonts and text sizes
 
-The editor now has a **Font size** slider below every editable text field. Sizes are shown in physical print points (pt), and update the live card immediately. Family name and optional year are adjustable on all sixteen designs. The three text-free designs also support editable greeting sizes. Greetings embedded in the other thirteen artwork files remain unchanged; their pixels cannot be resized independently without a separate artwork edit.
+Every editable text field has a **Font** menu, **Size (pt)** number input, and size slider. Name and year are adjustable on all sixteen cards; the three designs with editable greetings also support greeting font and size changes. The other thirteen greetings are embedded in the artwork.
 
 ## Using the controls
 
-1. Open a card and enter your family name/year.
-2. Move the slider under the field, or focus it and use arrow keys, Home, or End.
-3. Read the point-size value beside the slider. If long text needs fitting, a note gives the actual fitted print size.
-4. Use **Reset text sizes** to restore this design's defaults while keeping the photo and text. **Start Over** clears size preferences across all cards with the rest of your work.
+1. Choose a font: Classic serif, Lora, Great Vibes script, Arial, Trebuchet, or Times.
+2. Drag the size slider, or type an exact point size. The number input has no fixed maximum. The slider normally spans 0.24–120 pt and expands to accommodate larger typed values.
+3. Review the live preview. An explicit size is printed exactly as selected, without automatic shrinking or clipping to the original text box. Large text can overlap photos, decorations, or other text. Anything outside the card edges is cropped in both preview and export.
+4. **Reset text sizes** restores this design's size defaults while preserving fonts, photos, and text. Choose Classic serif to restore the original font. **Start Over** clears all personalization across cards.
 
-Sizes are remembered separately for each design during the current tab session. Going back to the collection or changing designs preserves each card's settings. Closing or refreshing the tab clears them, like the existing photo/text state.
+Fonts and sizes persist separately per design while the tab stays open. Refreshing or closing the tab clears them, as with the existing photo/text state.
 
-## Safe fitting and exports
+## Defaults and exports
 
-Each field retains its verified text box, alignment, color, and font family. The selected size is bounded by the field's minimum and safe height, with a vertical allowance for glyphs. Long text is automatically reduced to fit its width, with the actual size reported in the editor. Text that still cannot fit at minimum size blocks downloads and asks the customer to shorten it. Text boxes never move into photos or decorations.
+Until a size is explicitly changed, text uses the original template's size and automatic width fitting. Long names show their actual fitted size, and names that cannot fit block export. Entering a custom size gives the customer control over the layout and removes this fitting constraint. Required text still must be entered.
 
-Internally the compositor uses design pixels; 300 ppi output maps each pixel to 72/300 print points. The controls expose point units and accessible spoken point values. The selected sizes are passed to the shared renderer for preview and PNG/PDF export. Renderer fitting results supply the UI's actual-size feedback, avoiding a separate estimate.
+The shared renderer loads the chosen fonts before painting the preview or generating PNG/PDF. Lora and Great Vibes are bundled with their SIL Open Font Licenses in `public/fonts`; no external font request is needed. The other four choices use browser system fonts. Text alignment, color, and center position are preserved.
+
+Internal sizes use design pixels at 300 ppi; the editor shows physical print points (72 points per inch).
 
 ## Screenshots
 
-The example card uses a 21.6 pt family name and 16.3 pt year. Sample photos are illustrative; artwork has not been edited.
+The current screenshots show a 48 pt year in Lora and a family name in Great Vibes:
 
-| Viewport | Larger name/year                                              | Long-name fitting feedback                                          |
-| -------- | ------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Desktop  | [Larger text](screenshots/font-sizes/desktop-larger-text.jpg) | [Auto fitting](screenshots/font-sizes/desktop-auto-fitted-text.jpg) |
-| Tablet   | [Larger text](screenshots/font-sizes/tablet-larger-text.jpg)  | [Auto fitting](screenshots/font-sizes/tablet-auto-fitted-text.jpg)  |
-| Mobile   | [Larger text](screenshots/font-sizes/mobile-larger-text.jpg)  | [Auto fitting](screenshots/font-sizes/mobile-auto-fitted-text.jpg)  |
+| Desktop                                                           | Tablet                                                           | Mobile                                                           |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [Preview](screenshots/font-sizes/desktop-font-and-large-year.jpg) | [Preview](screenshots/font-sizes/tablet-font-and-large-year.jpg) | [Preview](screenshots/font-sizes/mobile-font-and-large-year.jpg) |
 
 ## Verification
 
-New browser checks at 1440, 768, and 390 px cover keyboard resizing, changed text pixels, unchanged artwork/photo pixels, exact preview/PNG equality after resizing, PDF page size, per-design persistence, reset sizes, confirmed Start Over, automatic fitting of long names, overflow rejection, and independently editable greeting sizes. Embedded artwork greetings have no misleading size control. Unit checks exercise size bounds, invalid preferences, selected-size rendering, and minimum-size width fitting. Existing editing and rendering regressions continue to run in CI.
-
-Source-art resolution and physical printing limitations remain as described in the main QA record. No artwork file, photo mask, template geometry, or deployment was changed by this update.
+Browser checks on desktop, tablet, and mobile cover font selection/loading, visible text beyond the original year box, exact preview/PNG pixel agreement, PDF dimensions, typing sizes above the slider range, per-card settings, and resets. Existing editing and export regressions also run. Unit tests verify unlimited explicit sizes, selected fonts, invalid size handling, and default fitting.
