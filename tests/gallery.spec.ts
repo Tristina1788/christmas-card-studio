@@ -40,7 +40,7 @@ test("missing originals are honest, accessible, and cannot export", async ({
     page.getByRole("heading", { name: "Nutcracker Noel", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeDisabled();
   await expect(
     page.getByRole("button", { name: "Download PDF" }),

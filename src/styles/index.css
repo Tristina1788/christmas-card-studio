@@ -1078,3 +1078,14 @@ canvas.template-image {
   color: var(--muted);
   min-height: 16px;
 }
+.side-switch {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 24px;
+}
+.side-switch .button {
+  min-width: 100px;
+}
+.download-buttons {
+  flex-wrap: wrap;
+}

@@ -94,7 +94,7 @@ test("multiple openings keep independent photos and require every slot", async (
   await select(page);
   await addPhoto(page);
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeDisabled();
   await page
     .getByRole("combobox", { name: "Photo opening", exact: true })
@@ -104,7 +104,7 @@ test("multiple openings keep independent photos and require every slot", async (
   ).toBeVisible();
   await addPhoto(page);
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeEnabled();
 });
 test("artwork aspect ratio and native resolution are checked", async ({
@@ -124,7 +124,7 @@ test("artwork aspect ratio and native resolution are checked", async ({
     }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeDisabled();
   await page.unroute("**/templates/template-01.jpg");
   await page.route("**/templates/template-01.jpg", (r) =>

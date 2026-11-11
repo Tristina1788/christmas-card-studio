@@ -1,6 +1,6 @@
 # Christmas Card Studio
 
-A browser-only React + TypeScript Christmas photo-card editor. Choose a watercolor design, upload a family photo, personalize the greeting/name/year, and download a 5 × 7 inch PNG or PDF. No accounts, backend, or server photo storage.
+A browser-only React + TypeScript Christmas photo-card editor. Choose a watercolor design, upload a family photo, personalize the greeting/name/year, and download separate front/back 5 × 7 inch PNGs or a two-page PDF. No accounts, backend, or server photo storage.
 
 ## Current collection
 
@@ -49,7 +49,7 @@ To review this branch before merge:
 ```powershell
 cd D:\Projects\Private\christmas-card-studio
 git fetch origin
-git switch feat/botanical-photo-collection
+git switch feat/two-sided-cards
 npm ci --include=dev
 npm run dev
 ```
@@ -73,7 +73,7 @@ npm run dev
 - Default text automatically fits its safe area. Custom sizes print as selected, allowing large text beyond the original box; the preview shows overlap and card-edge cropping.
 - Photos/text retained when switching designs; crops stored independently per design. Confirmed Start Over clears everything. State stays in memory while the tab remains open; refreshing or closing clears it.
 - PNG: exactly 1,500 × 2,100 pixels, 300 ppi pHYs metadata.
-- PDF: one 360 × 504 point page (5 × 7 inches), lossless composited PNG, no added margins.
+- PDF: two 360 × 504 point pages (5 × 7 inches each), front then back, with lossless composited images and no added margins.
 - Gallery, preview, and export use the same `renderCard` pipeline. Fonts/assets are awaited; customer-photo resolution warnings reflect the selected crop.
 
 **Print the PDF at Actual Size / 100%. Do not select Fit to Page.**
@@ -88,7 +88,7 @@ npm run test:e2e
 
 On Linux, browser dependencies may require `npx playwright install --with-deps chromium`. To use an existing Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its absolute path.
 
-Browser projects cover 1440, 768, and 390 px. Tests exercise all sixteen real artwork files and exports in addition to isolated synthetic fixtures for edge cases and the pending-original state. They verify PNG/preview pixel equality, exact PDF page size, artwork preservation outside edit regions, filled photo openings, local processing, crop controls, uploads, EXIF orientation, text fitting, reset, and template switching. See [QA and screenshots](docs/QA.md).
+Browser projects cover 1440, 768, and 390 px. Tests exercise all twenty front designs and exports in addition to isolated synthetic fixtures for edge cases and the pending-original state. They verify PNG/preview pixel equality, exact PDF page size, artwork preservation outside edit regions, filled photo openings, local processing, crop controls, uploads, EXIF orientation, text fitting, reset, and template switching. See [QA and screenshots](docs/QA.md).
 
 ## Adding templates
 
@@ -118,3 +118,5 @@ npm run preview -- --port 5174 --strictPort
 Open http://localhost:5174 on the computer running the server. The collection heading should show **16 designs**.
 
 Four new botanical photo cards (20 total), with editable greetings and sample 5 × 7 PDFs: [collection guide](docs/BOTANICAL_COLLECTION.md).
+
+Two-sided editing, message/collage backs, and paired download samples: [guide](docs/TWO_SIDED_CARDS.md).

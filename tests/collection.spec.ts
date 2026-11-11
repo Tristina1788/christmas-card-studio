@@ -80,7 +80,7 @@ test("all real templates preserve artwork, personalize, and export identical PNG
     await expect(page.locator(".card-canvas")).toBeVisible();
     if (t === templates[0])
       await expect(
-        page.getByRole("button", { name: "Download PNG" }),
+        page.getByRole("button", { name: "Download front PNG" }),
       ).toBeDisabled();
     for (const slot of t.photoSlots) {
       if (t.photoSlots.length > 1)
@@ -109,7 +109,7 @@ test("all real templates preserve artwork, personalize, and export identical PNG
       .fill("The Williams Family");
     await page.getByLabel("Year", { exact: true }).fill("2026");
     await expect(
-      page.getByRole("button", { name: "Download PNG" }),
+      page.getByRole("button", { name: "Download front PNG" }),
     ).toBeEnabled();
     await expect(
       page.getByText("This original artwork is below", { exact: false }),
@@ -124,11 +124,11 @@ test("all real templates preserve artwork, personalize, and export identical PNG
     const before = PNG.sync.read(
       Buffer.from((await pixels(page)).split(",")[1], "base64"),
     );
-    const png = PNG.sync.read(await download(page, "Download PNG"));
+    const png = PNG.sync.read(await download(page, "Download front PNG"));
     expect([png.width, png.height]).toEqual([1500, 2100]);
     expect(Buffer.compare(before.data, png.data)).toBe(0);
     const pdf = await PDFDocument.load(await download(page, "Download PDF"));
-    expect(pdf.getPages()).toHaveLength(1);
+    expect(pdf.getPages()).toHaveLength(2);
     expect(pdf.getPage(0).getSize()).toEqual({ width: 360, height: 504 });
     await page.evaluate(() => scrollTo(0, 0));
     await page.screenshot({

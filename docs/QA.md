@@ -69,3 +69,9 @@ Lint, TypeScript, production build, and 95 unit tests pass. Browser checks cover
 ## Botanical photo collection
 
 Four new text-free backgrounds bring the collection to 20 designs. All typography remains editable; new designs are featured first. Photo masks preserve the arch, scalloped oval, three ornament frames, and garland ribbons. Sample 5 × 7 PDFs and visual evidence are in [the collection guide](BOTANICAL_COLLECTION.md). Lint, build, and 96 unit tests pass; 12 new browser cases pass across desktop/tablet/mobile. PDF samples were independently rasterized at 300 ppi for comparison with their PNGs.
+
+## Two-sided cards
+
+Every card now exports a two-page 5 × 7 PDF (front, then back) and separately named PNG images. Four generated reverse backgrounds coordinate with the front themes. Message and three-photo collage layouts preserve independent photo/crop/text/font state. See [paired previews and updated samples](TWO_SIDED_CARDS.md). Lint, build, and 98 unit tests pass. The focused 36-case desktop/tablet/mobile suite passes, including independent decoding of both PDF page images for exact pixel comparison with PNGs and previews.
+
+The additional compositing/gallery/collage/two-sided run passed 25 browser cases, with two intentional non-touch skips. All four message backs and the collage back were visually reviewed.

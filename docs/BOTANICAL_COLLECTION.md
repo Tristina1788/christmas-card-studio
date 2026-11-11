@@ -17,9 +17,7 @@ The PDFs below are actual application downloads using the existing illustrative 
 
 ## PDF format
 
-In the absence of a product listing URL or specific print measurements, these cards use the established app format: **one portrait page, exactly 5 × 7 inches (360 × 504 PDF points)**, containing the complete 1,500 × 2,100-pixel card render. Print at Actual Size / 100%. These are flat front cards without a reverse side, fold, crop marks, or extra bleed. Mockup surroundings are not printed. Additional listing-specific requirements can be applied when supplied.
-
-Every PDF uses the same compositor, photo crops, fonts, and sizes as the preview and PNG. PDF generation itself retains the existing format. The four supplied sample PDFs were also independently rasterized with Poppler at 300 ppi and compared with their matching PNG downloads.
+Each sample now includes **two portrait pages, each exactly 5 × 7 inches (360 × 504 PDF points)**: front first, back second. The app also downloads separate front/back PNGs at 1,500 × 2,100 pixels with 300 ppi metadata. See [two-sided editing and print instructions](TWO_SIDED_CARDS.md) for message/collage back layouts, paired previews, and samples.
 
 ## Artwork and photo boundaries
 
