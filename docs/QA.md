@@ -1,43 +1,57 @@
-# Watercolor collection verification — 11 November 2026
+# Expanded collection QA — 11 November 2026
 
-The owner requested integration of three newly generated concepts: Botanical Noel, Cranberry Garland, and Winter Village. This record supersedes the initial missing-artwork implementation record in [QA-INITIAL.md](QA-INITIAL.md).
+This update adds thirteen original AI-generated designs and softens rectangular photo edges across the sixteen-card collection. The watercolor files are retained unchanged; new corners use a measured paper matte and a coordinating inner frame.
 
-## Checks
+## Verification
 
-- ESLint passed.
-- TypeScript compilation, including browser tests, passed.
-- Production build passed.
-- 89 unit tests passed.
-- Browser suite: **37 passed, 2 intentionally skipped** in approximately two minutes. The skips are the mobile-only touch test on desktop/tablet; the mobile gesture test passed.
+- ESLint, TypeScript compilation, and production build passed.
+- 91 unit tests passed, including proportion-preserving artwork fitting.
+- **40 browser tests passed, 2 intentionally skipped.** The complete existing/expanded suite passed 37 tests in about six minutes, followed by 3 passing collage-independence checks. The skips are touch-only checks on non-touch projects; mobile touch checks passed.
 
-Browser coverage includes the actual three artwork files and the existing isolated synthetic tests for masks, foreground overlays, multiple slots, EXIF orientation, input failures, cropping, switching, fitting long/empty text, optional year, and confirmed reset. Projects use Chromium at 1440 × 1000, 768 × 1024, and 390 × 844. Touch-only tests run on the mobile project.
+Actual-artwork tests traverse every one of the sixteen cards at desktop (1440 × 1000), tablet (768 × 1024), and mobile (390 × 844) sizes. Each test uploads photos to every opening, personalizes allowed fields, compares decoded PNG pixels with the preview, verifies exact PNG/PDF dimensions, and audits the photo mask, matte corners, and artwork outside editable boxes. A separate test uses four distinct solid-color uploads to prove the collage stores and replaces each photo independently and blocks exports until all four are supplied.
 
-## Actual-artwork checks
+Existing synthetic edge cases cover orientation, corruption, unsupported files, long/empty text, optional year, reset, mouse/keyboard/touch crop controls, foreground overlays, polygons, multiple slots, pending originals, aspect-ratio errors, and source-resolution warnings.
 
-For every new design, at each viewport:
+## Rounded-edge checks
 
-- Gallery loads the three distinct artwork files and renders labeled sample-family previews through the shared compositor.
-- User upload is required before download. No photo is POSTed to a server.
-- Greeting, family name, and year update independently from artwork.
-- PNG is exactly 1,500 × 2,100 and decoded pixels are identical to the live preview.
-- PDF is a single 360 × 504 point page (5 × 7 inches).
-- Source-resolution warning remains visible for native 1,060 × 1,484 artwork.
-- A saturated diagnostic photo reveals no remaining neutral-gray placeholder at sampled interior points.
-- Sampled pixels outside the configured photo/text regions remain identical to the unmodified artwork raster.
-- Gallery and editor have no horizontal overflow at the tested viewport widths.
+- Main rectangular photos have a 38-design-pixel corner radius; small collage photos use 18.
+- Matching paper-color mattes replace gray rectangle corners within the measured photo boxes.
+- A thin four-design-pixel frame remains inside the photo mask.
+- Sampled corner colors match the authored mattes, with no gray placeholder remnants.
+- Sampled photo interiors contain no remaining neutral-gray placeholder. The audit excludes the antialiased inner-frame edge, where intentional frame/photo blending can itself be neutral.
+- Sampled artwork outside the photo/text boxes is unchanged.
+- Oval templates retain their traced curved openings.
+- Preview and PNG use identical full-resolution compositing; PDF uses the same composited PNG.
 
 ## Screenshots
 
-These captures show the **new actual artwork**, with an AI-generated sample family portrait used as an upload for QA. They are not the earlier synthetic geometric fixtures or the absent owner originals.
+Gallery examples are labeled AI-generated sample photographs. Editor QA uses the same illustrative sample as a local upload. Embedded greetings in the thirteen new designs are preserved; family name/year are separate text. The three earlier text-free designs retain editable greetings.
 
-| Viewport | Gallery                                               | Botanical Noel                                   | Cranberry Garland                                | Winter Village                                   |
-| -------- | ----------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------ | ------------------------------------------------ |
-| Desktop  | [Gallery](screenshots/collection/desktop-gallery.png) | [Card 11](screenshots/collection/desktop-11.png) | [Card 12](screenshots/collection/desktop-12.png) | [Card 13](screenshots/collection/desktop-13.png) |
-| Tablet   | [Gallery](screenshots/collection/tablet-gallery.png)  | [Card 11](screenshots/collection/tablet-11.png)  | [Card 12](screenshots/collection/tablet-12.png)  | [Card 13](screenshots/collection/tablet-13.png)  |
-| Mobile   | [Gallery](screenshots/collection/mobile-gallery.png)  | [Card 11](screenshots/collection/mobile-11.png)  | [Card 12](screenshots/collection/mobile-12.png)  | [Card 13](screenshots/collection/mobile-13.png)  |
+[Desktop gallery](screenshots/expanded/desktop-gallery.jpg) · [Tablet gallery](screenshots/expanded/tablet-gallery.jpg) · [Mobile gallery](screenshots/expanded/mobile-gallery.jpg)
 
-Visual review checks greetings clear of bows/foliage, family/year clear of lower decorations, no stray lettering, no clipped watercolor details, clean oval/rectangular photo edges, preserved gold frame, correct layer order, and usable responsive controls.
+| Design                 | Personalized desktop screenshot                |
+| ---------------------- | ---------------------------------------------- |
+| Botanical Noel         | [Card 11](screenshots/expanded/desktop-11.jpg) |
+| Cranberry Garland      | [Card 12](screenshots/expanded/desktop-12.jpg) |
+| Winter Village         | [Card 13](screenshots/expanded/desktop-13.jpg) |
+| Sage Scallop Collage   | [Card 14](screenshots/expanded/desktop-14.jpg) |
+| Pinecone Keepsake      | [Card 15](screenshots/expanded/desktop-15.jpg) |
+| Merry & Bright         | [Card 16](screenshots/expanded/desktop-16.jpg) |
+| Cranberry Bows         | [Card 17](screenshots/expanded/desktop-17.jpg) |
+| Holly & Pine           | [Card 18](screenshots/expanded/desktop-18.jpg) |
+| Silent Night           | [Card 19](screenshots/expanded/desktop-19.jpg) |
+| Christmas Tree Farm    | [Card 20](screenshots/expanded/desktop-20.jpg) |
+| Gingerbread Christmas  | [Card 21](screenshots/expanded/desktop-21.jpg) |
+| Christmas in the Woods | [Card 22](screenshots/expanded/desktop-22.jpg) |
+| Home for Christmas     | [Card 23](screenshots/expanded/desktop-23.jpg) |
+| Nutcracker Noel        | [Card 24](screenshots/expanded/desktop-24.jpg) |
+| Blue Winter Village    | [Card 25](screenshots/expanded/desktop-25.jpg) |
+| Sage Folk Christmas    | [Card 26](screenshots/expanded/desktop-26.jpg) |
 
-## Limits
+Mobile examples: [four-photo collage](screenshots/expanded/mobile-14.jpg), [pinecone oval](screenshots/expanded/mobile-15.jpg), [navy](screenshots/expanded/mobile-19.jpg), [gingerbread](screenshots/expanded/mobile-21.jpg), and [sage folk](screenshots/expanded/mobile-26.jpg). Review screenshots are JPEGs for download size; full PNG screenshots of all sixteen editors at all three viewport sizes are captured in CI artifacts.
 
-Native artwork is approximately 212 ppi at 5 × 7 inches. Export dimensions/metadata are 300 ppi, not additional genuine source detail. Test a physical print before commercial release. Real Safari/iOS/Firefox device checks, printer color matching, and third-party PDF-viewer rasterization remain unverified. The ten earlier owner originals are still absent and are kept in a separate pending manifest.
+Visual review covers complete decorations, clean rounded/oval boundaries, clear greeting/name/year spacing, no duplicate greeting, and responsive editing controls.
+
+## Practical limits
+
+Original generated artwork provides approximately 212–216 ppi at 5 × 7 inches. The editor warns that 300 ppi output metadata adds no genuine source detail. Actual-size physical prints, printer color rendering, real Safari/iOS/Firefox devices, and external PDF-viewer rasterization remain unverified. The ten earlier owner-original designs remain separately pending and are not represented as the new generated artwork.

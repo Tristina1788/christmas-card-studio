@@ -9,6 +9,15 @@ const box = z.object({
 const point = z.object({ x: z.number(), y: z.number() });
 const slot = box.extend({
   id: z.string().min(1),
+  label: z.string().optional(),
+  matteColor: z
+    .string()
+    .regex(/^#[0-9a-f]{6}$/i)
+    .optional(),
+  frameColor: z
+    .string()
+    .regex(/^#[0-9a-f]{6}$/i)
+    .optional(),
   shape: z.enum(["rectangle", "rounded", "polygon"]),
   radius: z.number().nonnegative().default(0),
   points: z.array(point).optional(),
@@ -49,6 +58,11 @@ export const templateSchema = z
       "berry",
     ]),
     background: assetPath,
+    backgroundFit: z.enum(["exact", "contain"]).optional(),
+    paperColor: z
+      .string()
+      .regex(/^#[0-9a-f]{6}$/i)
+      .optional(),
     foreground: assetPath.nullable(),
     galleryPhoto: assetPath.optional(),
     width: z.literal(1500),

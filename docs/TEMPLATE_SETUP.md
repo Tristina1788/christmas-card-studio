@@ -2,7 +2,7 @@
 
 ## Preserve the original
 
-Use owner-supplied originals for their existing designs. The owner has separately authorized the three new AI-generated designs documented in NEW_COLLECTION.md. Never represent generated artwork as an owner-supplied original, redraw approved watercolor details, remove backgrounds automatically, or paint over embedded greetings. File paths are local under `/templates/`; external image URLs are rejected to avoid tainted export canvases and third-party photo traffic.
+Use owner-supplied originals for their existing designs. The owner has separately authorized the new AI-generated designs documented in NEW_COLLECTION.md and EXPANDED_COLLECTION.md. Never represent generated artwork as an owner-supplied original, redraw approved watercolor details, remove backgrounds automatically, or paint over embedded greetings. File paths are local under `/templates/`; external image URLs are rejected to avoid tainted export canvases and third-party photo traffic.
 
 Each template has its own image path. The production canvas is **1500 × 2100**; geometry is measured in that design coordinate system. Native image sizes can differ if the 5:7 aspect ratio matches. Convert measured source coordinates with `x * 1500 / sourceWidth` and `y * 2100 / sourceHeight`. Lower-resolution source files trigger a warning, not a promise of restored detail.
 
@@ -74,3 +74,9 @@ Add a new manifest entry with a unique ID and image path, its own original art, 
 - PNG and PDF match preview, 1500 × 2100 and 360 × 504 pt respectively.
 - Desktop, tablet, mobile, and actual-size print inspected.
 - Review note and evidence recorded before approval.
+
+## Soft photo edges on flattened artwork
+
+For a rectangular gray placeholder with rounded photo presentation, use `shape: rounded`, a measured `radius`, `matteColor` matching the surrounding paper, and an optional `frameColor`. The matte covers only the measured original opening, including gray corners. Without a matte, clipped rounded corners would reveal the gray placeholder beneath. Verify the matte never crosses into decoration. The inner frame is four design pixels and remains clipped within the photo mask.
+
+For deliberately approved non-5:7 artwork, `backgroundFit: contain` plus `paperColor` preserves its original proportions with margins. Compute all photo/text geometry from the same scale and offset. Do not enable this to hide a badly composed source. Use optional photo-slot `label` values for clear multi-photo controls.

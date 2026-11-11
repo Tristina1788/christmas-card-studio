@@ -28,7 +28,10 @@ export async function loadArtwork(template: Template): Promise<Artwork> {
   for (const img of [background, foreground].filter(
     (i): i is HTMLImageElement => !!i,
   )) {
-    if (Math.abs(img.naturalWidth / img.naturalHeight - 5 / 7) > 0.002)
+    if (
+      !(img === background && template.backgroundFit === "contain") &&
+      Math.abs(img.naturalWidth / img.naturalHeight - 5 / 7) > 0.002
+    )
       throw new Error(
         "This artwork has a different aspect ratio. It needs studio review before editing.",
       );

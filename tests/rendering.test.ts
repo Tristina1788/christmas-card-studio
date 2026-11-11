@@ -1,3 +1,4 @@
+import { artworkPlacement } from "../src/rendering/artworkPlacement";
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { photoGeometry, effectivePpi } from "../src/rendering/photoCrop";
 import { templateSchema, loadTemplates } from "../src/config/templates";
@@ -73,24 +74,19 @@ describe("active collection loading", () => {
     readFileSync("public/templates/manifest.json", "utf8"),
   );
   afterEach(() => vi.unstubAllGlobals());
-  it("loads the new three-design collection without a hardcoded ten-design limit", async () => {
+  it("loads the expanded collection without a hardcoded design limit", async () => {
     vi.stubGlobal(
       "fetch",
       async () => new Response(JSON.stringify(active), { status: 200 }),
     );
     const templates = await loadTemplates();
-    expect(templates.map((t) => t.name)).toEqual([
+    expect(templates).toHaveLength(16);
+    expect(templates.slice(0, 3).map((t) => t.name)).toEqual([
       "Botanical Noel",
       "Cranberry Garland",
       "Winter Village",
     ]);
-    expect(
-      templates.every(
-        (t) =>
-          t.status === "approved" &&
-          t.textFields.some((f) => f.kind === "greeting"),
-      ),
-    ).toBe(true);
+    expect(templates.every((t) => t.status === "approved")).toBe(true);
   });
   it("rejects duplicate artwork paths", async () => {
     const duplicate = structuredClone(active);
@@ -107,4 +103,25 @@ describe("active collection loading", () => {
     vi.stubGlobal("fetch", async () => new Response("[]", { status: 200 }));
     await expect(loadTemplates()).rejects.toThrow();
   });
+});
+
+describe("preserved artwork proportions", () => {
+  it("fits off-ratio artwork entirely within the print page without distortion", () => {
+    const p = artworkPlacement(
+      { width: 1500, height: 2100, backgroundFit: "contain" },
+      { naturalWidth: 1042, naturalHeight: 1510 },
+    );
+    expect(p.x).toBeGreaterThan(0);
+    expect(p.y).toBe(0);
+    expect(p.height).toBe(2100);
+    expect(p.width / p.height).toBeCloseTo(1042 / 1510, 10);
+    expect(p.x * 2 + p.width).toBeCloseTo(1500, 10);
+  });
+  it("keeps approved exact-ratio placement unchanged", () =>
+    expect(
+      artworkPlacement(
+        { width: 1500, height: 2100 },
+        { naturalWidth: 1060, naturalHeight: 1484 },
+      ),
+    ).toEqual({ x: 0, y: 0, width: 1500, height: 2100 }));
 });

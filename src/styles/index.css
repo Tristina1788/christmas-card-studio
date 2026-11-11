@@ -1041,3 +1041,11 @@ input[type="range"] {
   border-radius: 2px;
   letter-spacing: 0.2px;
 }
+/* Gently rounded presentation complements the authored photo masks in exports. */
+.artwork-wrap {
+  border-radius: 8px;
+}
+canvas.template-image {
+  background: #eee8dc;
+  border-radius: 3px;
+}
