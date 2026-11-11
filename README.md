@@ -1,86 +1,91 @@
 # Christmas Card Studio
 
-A browser-only React + TypeScript photo-card editor. Choose a design, add a photo, crop and personalize it, and export a 5 × 7 inch PNG or PDF. No accounts, backend, or photo storage service.
+A browser-only React + TypeScript Christmas photo-card editor. Choose a watercolor design, upload a family photo, personalize the greeting/name/year, and download a 5 × 7 inch PNG or PDF. No accounts, backend, or server photo storage.
 
-**Artwork delivery is blocked:** none of the ten original images were present in the repository or workspace. The collection explicitly shows “Awaiting original artwork”; customer downloads are disabled. This implementation does not claim the original designs have been visually verified. Synthetic geometric fixtures exist only in tests and are never substituted for production artwork.
+## Current collection
+
+The owner authorized three **new AI-generated designs** inspired by their stationery references:
+
+| Design            | Photo layout                                                 | Editable fields                      |
+| ----------------- | ------------------------------------------------------------ | ------------------------------------ |
+| Botanical Noel    | Precisely traced organic oval                                | Greeting, family name, optional year |
+| Cranberry Garland | Tall rectangle between evergreen garlands and cranberry bows | Greeting, family name, optional year |
+| Winter Village    | Gold-edged rectangle above snowy cottages                    | Greeting, family name, optional year |
+
+Each uses a separate, unchanged, text-free artwork file. Customer photos are clipped to measured openings; text is composited into verified clear areas. No automatic background removal, extracted watercolor layers, or reconstructed decorations are used. Gallery examples use a clearly labeled AI-generated illustrative family photo. Customers must upload their own photo to enable downloads; the gallery photo is never silently used for their export.
+
+**Source detail:** the artwork is 1,060 × 1,484 pixels (approximately 212 ppi at 5 × 7 inches). PNG exports are exactly 1,500 × 2,100 with 300 ppi metadata, but that does not add genuine detail to the source artwork. The editor warns about this. Confirm a physical print sample before commercial release.
+
+The ten previously requested owner-supplied designs remain unprovided. Their configurations are preserved in `public/templates/owner-originals.pending.json`; they are not shown as part of this new collection or misrepresented as completed originals.
 
 ## Run locally
 
-Requires Node.js 22.12+ (or 24+) and npm.
+Requires Node.js 22.12+ or 24+ and npm:
 
 ```sh
 npm install
 npm run dev
 ```
 
-Open the localhost URL printed by Vite. For a production build, run `npm run build` and `npm run preview`. Deploy the generated `dist/` directory to any static host. This change does not publish a website.
+Open the localhost URL printed by Vite. Production build: `npm run build`; local build preview: `npm run preview`. A static host can serve `dist/`. This PR does not publish a website.
 
-After merging the PR, on Windows:
+To review this branch before merge:
 
 ```powershell
 cd D:\Projects\Private\christmas-card-studio
+git fetch origin
+git switch feat/watercolor-card-collection
+npm install
+npm run dev
+```
+
+After merging:
+
+```powershell
+cd D:\Projects\Private\christmas-card-studio
+git switch main
 git pull origin main
 npm install
 npm run dev
 ```
 
-## Available functionality
+## Editing and downloads
 
-- Responsive ten-design gallery, with explicit availability states.
-- One configuration-driven editor, supporting rectangular, rounded, and polygon photo slots; optional artist-authored foreground overlays; multiple slots and caption fields.
-- Local JPEG, PNG, and WebP decoding, including EXIF orientation. File validation and actionable errors.
-- Cover crop with bounded drag, touch pinch zoom, keyboard arrow movement, sliders, and reset.
-- Shared photo/text state when changing templates, independent crops per design, and confirmed Start Over. Work stays in memory while the tab is open, including when returning to the gallery. Refreshing or closing the tab clears it.
-- Font fitting in verified safe areas. Names that cannot fit at minimum font size block downloads with an explanation. Existing greetings remain in the original image; greeting controls appear only if explicitly configured for clean text-free artwork.
-- Exact 1,500 × 2,100 PNG, with a 300 ppi pHYs metadata chunk. One-page lossless-image PDF with a 360 × 504 point MediaBox (5 × 7 inches).
-- Full-resolution preview and both exports use `renderCard`. Fonts and images are awaited; source-resolution warnings report effective cropped-photo ppi and undersized artwork.
-- Safe failure for missing images, invalid configuration, unverified templates, and wrong artwork aspect ratios.
+- JPEG, PNG, and WebP uploads with EXIF orientation, file validation, and actionable errors.
+- Fixed cover crop with mouse/touch drag, pinch zoom, keyboard arrows, accessible sliders, and crop reset.
+- One configuration-driven editor supporting multiple photo slots, polygon/rounded masks, optional authored foregrounds, and captions.
+- Font fitting in safe areas. Fields that cannot fit at minimum font size block export instead of clipping silently.
+- Photos/text retained when switching designs; crops stored independently per design. Confirmed Start Over clears everything. State stays in memory while the tab remains open; refreshing or closing clears it.
+- PNG: exactly 1,500 × 2,100 pixels, 300 ppi pHYs metadata.
+- PDF: one 360 × 504 point page (5 × 7 inches), lossless composited PNG, no added margins.
+- Gallery, preview, and export use the same `renderCard` pipeline. Fonts/assets are awaited; customer-photo resolution warnings reflect the selected crop.
 
-**Print the PDF at Actual Size / 100%. Do not select Fit to Page.** Export resolution is not a claim that low-resolution original artwork contains 300 ppi detail.
-
-## Original assets required
-
-The owner must provide these original images (not screenshots or automatically extracted foregrounds):
-
-| File in `public/templates/` | Design                 |
-| --------------------------- | ---------------------- |
-| `template-01.jpg`           | Nutcracker Noel        |
-| `template-02.jpg`           | Holly & Pine           |
-| `template-03.jpg`           | Silent Night           |
-| `template-04.jpg`           | Winter Village         |
-| `template-05.jpg`           | Christmas Tree Farm    |
-| `template-06.jpg`           | Gingerbread Christmas  |
-| `template-07.jpg`           | Christmas in the Woods |
-| `template-08.jpg`           | Home for Christmas     |
-| `template-09.jpg`           | Merry & Bright         |
-| `template-10.jpg`           | Cranberry Bows         |
-
-PNG or WebP originals are also supported: update the manifest paths to match. Do not convert or redraw artwork unnecessarily. See [template setup and approval](docs/TEMPLATE_SETUP.md) for measuring slots, masks, text areas, and visual approval. Do not set `approved` until the compositing has been checked against the actual image.
+**Print the PDF at Actual Size / 100%. Do not select Fit to Page.**
 
 ## Verification
 
 ```sh
-npm run lint
-npm run build
-npm test
+npm run check
 npx playwright install chromium
 npm run test:e2e
 ```
 
-If using an installed Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its absolute path. On Linux, Playwright may require `npx playwright install --with-deps chromium`.
+On Linux, browser dependencies may require `npx playwright install --with-deps chromium`. To use an existing Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to its absolute path.
 
-Tests cover missing-artwork behavior, distinct image paths, all ten editor selections, upload and replacement, portrait/landscape and rotated JPEGs, corruption/type errors, drag, keyboard positioning, zoom, crop reset, persistent switching, long/empty text, optional year, confirmed reset, PNG dimensions and ppi, exact PDF page size, pixel-identical preview/PNG output, and unchanged pixels outside approved edit regions. Projects run at 1440, 768, and 390 px. Synthetic fixtures validate the renderer; **they do not validate any original holiday artwork**.
+Browser projects cover 1440, 768, and 390 px. Tests exercise all three real artwork files and exports in addition to isolated synthetic fixtures for edge cases and the pending-original state. They verify PNG/preview pixel equality, exact PDF page size, artwork preservation outside edit regions, filled photo openings, local processing, crop controls, uploads, EXIF orientation, text fitting, reset, and template switching. See [QA and screenshots](docs/QA.md).
 
-Playwright saves full-page gallery/editor screenshots and ten synthetic layout screenshots per viewport in `test-results/`. `playwright-report/` includes failure details and traces; CI uploads both as an artifact. See [QA notes](docs/QA.md) for actual execution results and remaining work.
+## Adding templates
+
+See [template setup](docs/TEMPLATE_SETUP.md) and [new artwork provenance and measured geometry](docs/NEW_COLLECTION.md). Add an entry to `public/templates/manifest.json`; gallery counts adapt automatically. Use unique IDs/paths and measure each opening/text area from the actual source. Preserve baked-in greetings in existing flattened art; only text-free new artwork supports an editable greeting.
 
 ## Code map
 
-- `public/templates/manifest.json`: ten template configurations; all currently awaiting assets.
-- `src/config/templates.ts`: schema and geometry validation, shared types.
-- `src/rendering/`: decoding, asset checks, cover-crop math, shared compositor, PNG/PDF exports.
-- `src/components/`: gallery, preview gesture controls, editor panels.
-- `tests/`: unit and browser tests, isolated synthetic assets.
+- `public/templates/`: active manifest, new artwork/sample photo, and separate pending-original manifest.
+- `src/config/templates.ts`: shared schema, geometry checks, collection loader.
+- `src/rendering/`: asset checks, image decoding, crop math, compositor, PNG/PDF exports.
+- `src/components/`: gallery, gesture preview, editor controls.
+- `tests/`: real-artwork journeys and isolated synthetic edge-case fixtures.
 
-## Release limitations
+## Remaining release checks
 
-Original artwork, exact photo-opening coordinates/masks, and owner-verified safe personalization areas are missing. No production template is approved. Final template-specific visual QA, print samples, and Safari/iOS/Firefox checks remain. Browser automation currently targets Chromium. Work is not saved across page reloads. Photos are decoded locally with a 25 MB / 80 megapixel limit; image decoding memory still depends on the browser/device.
+Automated tests target Chromium. Real Safari/iOS/Firefox devices, printer color rendering, and actual-size print samples still need checking. PDF page size is verified; third-party PDF viewer rasterization has not been pixel-tested. Photos have a 25 MB / 80 megapixel limit; decode memory depends on the browser/device. The artwork's native resolution limit remains visible in the editor.

@@ -1,48 +1,43 @@
-# Verification record — 11 November 2026
+# Watercolor collection verification — 11 November 2026
 
-## Executed checks
+The owner requested integration of three newly generated concepts: Botanical Noel, Cranberry Garland, and Winter Village. This record supersedes the initial missing-artwork implementation record in [QA-INITIAL.md](QA-INITIAL.md).
 
-| Check | Result |
-|---|---|
-| `npm run lint` | Passed |
-| TypeScript compilation, including browser tests | Passed |
-| `npm run build` | Passed |
-| `npm test` | 86 passed |
-| `npm run test:e2e` with `/usr/bin/chromium` | 31 passed, 2 intentionally skipped |
-| `npm audit --omit=dev --audit-level=high` | No production vulnerabilities reported |
-| `git diff --check` | Passed |
+## Checks
 
-The two skips are the mobile touch-only test on desktop and tablet; the same test passed on the mobile project. Final browser suite completed in approximately 1.5 minutes without failures. Tests ran in Chromium on Linux at 1440 × 1000, 768 × 1024, and 390 × 844. Earlier runs found an inaccessible slider label; explicit accessible names were added and all checks rerun successfully.
+- ESLint passed.
+- TypeScript compilation, including browser tests, passed.
+- Production build passed.
+- 89 unit tests passed.
+- Browser suite: **37 passed, 2 intentionally skipped** in approximately two minutes. The skips are the mobile-only touch test on desktop/tablet; the mobile gesture test passed.
 
-## Verified behavior
+Browser coverage includes the actual three artwork files and the existing isolated synthetic tests for masks, foreground overlays, multiple slots, EXIF orientation, input failures, cropping, switching, fitting long/empty text, optional year, and confirmed reset. Projects use Chromium at 1440 × 1000, 768 × 1024, and 390 × 844. Touch-only tests run on the mobile project.
 
-- All ten collection entries and correct editor selection; no image requests for missing originals.
-- Unique original paths, ten synthetic layout screenshots per viewport, and missing-asset error states.
-- JPEG/PNG decoding, landscape replacement, EXIF rotation, unsupported/corrupted image feedback, and preservation of a previous valid photo when a replacement fails.
-- Zoom, drag, keyboard crop controls, reset crop, mobile pinch and touch pan.
-- Shared photos and family/year fields across templates, independent template crops, and multiple independent photo openings.
-- Required/optional fields, minimum-font overflow prevention, fitting longer names, reset confirmation/cancel.
-- Exact 1500 × 2100 PNG with 300 ppi metadata; decoded PNG pixels equal the full-resolution preview.
-- PDF has one page with an exact 360 × 504 point MediaBox. It uses a lossless PNG from the shared renderer; PDF rasterization in third-party viewers has not been pixel-tested.
-- Sampled pixels outside edit regions remain identical to the synthetic source. No gray placeholder remains at the tested interior photo pixel.
-- Rounded/polygon clipping and an independently authored test overlay preserve boundary pixels and correct layer order.
-- Invalid artwork aspect ratios fail safely; undersized source artwork warns about native detail.
-- No horizontal overflow at the tested viewport widths.
+## Actual-artwork checks
 
-## Screenshot evidence
+For every new design, at each viewport:
 
-These are browser captures. **The geometric photo-card images in the synthetic editor captures are test fixtures, not the owner's holiday artwork.** A visible banner labels them accordingly. Production availability screenshots show the real missing-artwork state.
+- Gallery loads the three distinct artwork files and renders labeled sample-family previews through the shared compositor.
+- User upload is required before download. No photo is POSTed to a server.
+- Greeting, family name, and year update independently from artwork.
+- PNG is exactly 1,500 × 2,100 and decoded pixels are identical to the live preview.
+- PDF is a single 360 × 504 point page (5 × 7 inches).
+- Source-resolution warning remains visible for native 1,060 × 1,484 artwork.
+- A saturated diagnostic photo reveals no remaining neutral-gray placeholder at sampled interior points.
+- Sampled pixels outside the configured photo/text regions remain identical to the unmodified artwork raster.
+- Gallery and editor have no horizontal overflow at the tested viewport widths.
 
-| Viewport | Gallery | Editor availability | Synthetic editor |
-|---|---|---|---|
-| Desktop | [Gallery](screenshots/desktop-gallery-awaiting-originals.png) | [Awaiting originals](screenshots/desktop-editor-awaiting-originals.png) | [QA fixture](screenshots/desktop-synthetic-editor.png) |
-| Tablet | [Gallery](screenshots/tablet-gallery-awaiting-originals.png) | [Awaiting originals](screenshots/tablet-editor-awaiting-originals.png) | [QA fixture](screenshots/tablet-synthetic-editor.png) |
-| Mobile | [Gallery](screenshots/mobile-gallery-awaiting-originals.png) | [Awaiting originals](screenshots/mobile-editor-awaiting-originals.png) | [QA fixture](screenshots/mobile-synthetic-editor.png) |
+## Screenshots
 
-The gallery, availability state, all ten desktop synthetic layout captures, and edited desktop/mobile captures were visually inspected. This verifies the surrounding UI and synthetic layout/compositing only. It does **not** establish that the ten original templates are correct.
+These captures show the **new actual artwork**, with an AI-generated sample family portrait used as an upload for QA. They are not the earlier synthetic geometric fixtures or the absent owner originals.
 
-## Release blockers
+| Viewport | Gallery                                               | Botanical Noel                                   | Cranberry Garland                                | Winter Village                                   |
+| -------- | ----------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------ | ------------------------------------------------ |
+| Desktop  | [Gallery](screenshots/collection/desktop-gallery.png) | [Card 11](screenshots/collection/desktop-11.png) | [Card 12](screenshots/collection/desktop-12.png) | [Card 13](screenshots/collection/desktop-13.png) |
+| Tablet   | [Gallery](screenshots/collection/tablet-gallery.png)  | [Card 11](screenshots/collection/tablet-11.png)  | [Card 12](screenshots/collection/tablet-12.png)  | [Card 13](screenshots/collection/tablet-13.png)  |
+| Mobile   | [Gallery](screenshots/collection/mobile-gallery.png)  | [Card 11](screenshots/collection/mobile-11.png)  | [Card 12](screenshots/collection/mobile-12.png)  | [Card 13](screenshots/collection/mobile-13.png)  |
 
-None of the owner's original ten template images are present. Exact photo openings/masks, any genuinely necessary artist-authored overlays, and safe name/year areas remain unmeasured. Every production template remains `awaiting-artwork`; exports are disabled. No artwork extraction, substitution, or approximate watercolor reconstruction was performed.
+Visual review checks greetings clear of bows/foliage, family/year clear of lower decorations, no stray lettering, no clipped watercolor details, clean oval/rectangular photo edges, preserved gold frame, correct layer order, and usable responsive controls.
 
-After originals arrive, follow [template setup and approval](TEMPLATE_SETUP.md), integrate and inspect each design, compare preview/PNG/PDF to the original, and print an actual-size sample. Test real Safari/iOS and Firefox devices before release. This PR is an implementation for review, not approval to launch the collection.
+## Limits
+
+Native artwork is approximately 212 ppi at 5 × 7 inches. Export dimensions/metadata are 300 ppi, not additional genuine source detail. Test a physical print before commercial release. Real Safari/iOS/Firefox device checks, printer color matching, and third-party PDF-viewer rasterization remain unverified. The ten earlier owner originals are still absent and are kept in a separate pending manifest.

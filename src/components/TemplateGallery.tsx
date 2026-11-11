@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { loadArtwork, loadImage } from "../rendering/assets";
+import { renderCard, prepareFonts } from "../rendering/cardRenderer";
 import type { Template } from "../config/templates";
 function TemplateArtwork({ template: t }: { template: Template }) {
   const [failed, setFailed] = useState(false);
@@ -17,13 +19,71 @@ function TemplateArtwork({ template: t }: { template: Template }) {
         </span>
       </div>
     );
-  return (
+  return t.galleryPhoto ? (
+    <GalleryCard template={t} onFailure={() => setFailed(true)} />
+  ) : (
     <img
       className="template-image"
       src={t.background}
       alt={`${t.name} original card artwork`}
       onError={() => setFailed(true)}
     />
+  );
+}
+function GalleryCard({
+  template,
+  onFailure,
+}: {
+  template: Template;
+  onFailure: () => void;
+}) {
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const failure = useRef(onFailure);
+  useEffect(() => {
+    let active = true;
+    let photo: ImageBitmap | undefined;
+    Promise.all([
+      loadArtwork(template),
+      loadImage(template.galleryPhoto!),
+      prepareFonts(template),
+    ])
+      .then(async ([artwork, image]) => {
+        photo = await createImageBitmap(image);
+        if (!active) {
+          photo.close();
+          return;
+        }
+        if (canvas.current)
+          renderCard(canvas.current, {
+            template,
+            artwork,
+            photos: Object.fromEntries(
+              template.photoSlots.map((s) => [s.id, photo]),
+            ),
+            crops: {},
+            values: {},
+          });
+      })
+      .catch(() => {
+        if (active) failure.current();
+      });
+    return () => {
+      active = false;
+      photo?.close();
+    };
+  }, [template]);
+  return (
+    <>
+      <canvas
+        className="template-image"
+        ref={canvas}
+        width={1500}
+        height={2100}
+        role="img"
+        aria-label={`${template.name} card with an illustrative sample family photo`}
+      />
+      <span className="sample-photo-label">Illustrative sample photo</span>
+    </>
   );
 }
 export function TemplateGallery({
@@ -77,7 +137,7 @@ export function TemplateGallery({
             <h2>The Christmas collection</h2>
           </div>
           <span className="collection-count">
-            10 designs · one lovely tradition
+            {templates.length} designs · one lovely tradition
           </span>
         </div>
         {templates.some((t) => t.status !== "approved") && (

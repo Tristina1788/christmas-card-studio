@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { photoGeometry, effectivePpi } from "../src/rendering/photoCrop";
-import { templateSchema } from "../src/config/templates";
+import { templateSchema, loadTemplates } from "../src/config/templates";
 import { readFileSync } from "node:fs";
 const slot = {
   id: "photo",
@@ -42,11 +42,11 @@ describe("cover crop invariants", () => {
 });
 describe("template review gates", () => {
   const t = JSON.parse(
-    readFileSync("public/templates/manifest.json", "utf8"),
+    readFileSync("public/templates/owner-originals.pending.json", "utf8"),
   )[0];
   it("all originals are explicitly pending", () => {
     for (const template of JSON.parse(
-      readFileSync("public/templates/manifest.json", "utf8"),
+      readFileSync("public/templates/owner-originals.pending.json", "utf8"),
     ))
       expect(templateSchema.parse(template).status).toBe("awaiting-artwork");
   });
@@ -66,4 +66,45 @@ describe("template review gates", () => {
         photoSlots: [{ ...slot, shape: "polygon", points: [{ x: -1, y: 0 }] }],
       }).success,
     ).toBe(false));
+});
+
+describe("active collection loading", () => {
+  const active = JSON.parse(
+    readFileSync("public/templates/manifest.json", "utf8"),
+  );
+  afterEach(() => vi.unstubAllGlobals());
+  it("loads the new three-design collection without a hardcoded ten-design limit", async () => {
+    vi.stubGlobal(
+      "fetch",
+      async () => new Response(JSON.stringify(active), { status: 200 }),
+    );
+    const templates = await loadTemplates();
+    expect(templates.map((t) => t.name)).toEqual([
+      "Botanical Noel",
+      "Cranberry Garland",
+      "Winter Village",
+    ]);
+    expect(
+      templates.every(
+        (t) =>
+          t.status === "approved" &&
+          t.textFields.some((f) => f.kind === "greeting"),
+      ),
+    ).toBe(true);
+  });
+  it("rejects duplicate artwork paths", async () => {
+    const duplicate = structuredClone(active);
+    duplicate[1].background = duplicate[0].background;
+    vi.stubGlobal(
+      "fetch",
+      async () => new Response(JSON.stringify(duplicate), { status: 200 }),
+    );
+    await expect(loadTemplates()).rejects.toThrow(
+      "unique ID and original artwork file",
+    );
+  });
+  it("rejects an empty collection", async () => {
+    vi.stubGlobal("fetch", async () => new Response("[]", { status: 200 }));
+    await expect(loadTemplates()).rejects.toThrow();
+  });
 });

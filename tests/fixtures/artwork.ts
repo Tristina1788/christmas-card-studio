@@ -52,7 +52,7 @@ export async function approvedCollection(
     }),
   );
   const manifest = JSON.parse(
-    readFileSync("public/templates/manifest.json", "utf8"),
+    readFileSync("public/templates/owner-originals.pending.json", "utf8"),
   ) as Template[];
   for (const t of manifest) {
     t.status = "approved";

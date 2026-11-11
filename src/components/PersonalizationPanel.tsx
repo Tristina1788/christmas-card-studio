@@ -53,8 +53,9 @@ export function PersonalizationPanel({
         </p>
       )}
       <p className="helper">
-        The design’s original greeting is preserved exactly as part of the
-        artwork.
+        {fields.some((f) => f.kind === "greeting")
+          ? "Personalize your greeting, family name, and year."
+          : "The design’s original greeting is preserved exactly as part of the artwork."}
       </p>
     </section>
   );

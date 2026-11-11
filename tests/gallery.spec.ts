@@ -1,10 +1,20 @@
 import { test, expect } from "@playwright/test";
+import { readFileSync } from "node:fs";
 import { approvedCollection } from "./fixtures/artwork";
 test("missing originals are honest, accessible, and cannot export", async ({
   page,
 }, info) => {
   const failures: string[] = [];
   page.on("pageerror", (e) => failures.push(e.message));
+  await page.route("**/templates/manifest.json", (route) =>
+    route.fulfill({
+      contentType: "application/json",
+      body: readFileSync(
+        "public/templates/owner-originals.pending.json",
+        "utf8",
+      ),
+    }),
+  );
   await page.goto("/");
   await expect(
     page.getByRole("heading", { name: "The Christmas collection" }),
