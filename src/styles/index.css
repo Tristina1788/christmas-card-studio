@@ -1049,3 +1049,18 @@ canvas.template-image {
   background: #eee8dc;
   border-radius: 3px;
 }
+.personalization-field {
+  padding-bottom: 10px;
+}
+.personalization-field .text-control {
+  margin-bottom: 7px;
+}
+.font-size-control {
+  margin-top: 5px;
+}
+.font-fit-note {
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--muted);
+  min-height: 16px;
+}

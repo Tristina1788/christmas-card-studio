@@ -57,8 +57,10 @@ test("photo crop, personalization, switching, reset, and accurate downloads", as
 }, info) => {
   await openEditor(page);
   await upload(page);
-  await page.getByLabel("Family name").fill("Love, The Johnsons");
-  await page.getByLabel("Year", { exact: false }).fill("2026");
+  await page
+    .getByLabel("Family name", { exact: true })
+    .fill("Love, The Johnsons");
+  await page.getByLabel("Year", { exact: true }).fill("2026");
   const zoom = page.getByRole("slider", { name: /Zoom/ });
   await zoom.focus();
   await page.keyboard.press("ArrowRight");
@@ -136,7 +138,7 @@ test("photo crop, personalization, switching, reset, and accurate downloads", as
   await page
     .getByRole("button", { name: "Personalize Holly & Pine", exact: true })
     .click();
-  await expect(page.getByLabel("Family name")).toHaveValue(
+  await expect(page.getByLabel("Family name", { exact: true })).toHaveValue(
     "Love, The Johnsons",
   );
   await expect(
@@ -149,24 +151,24 @@ test("photo crop, personalization, switching, reset, and accurate downloads", as
   await expect(zoom).toHaveValue("1.8");
   await page.getByRole("button", { name: "Reset crop", exact: true }).click();
   await expect(zoom).toHaveValue("1");
-  await page.getByLabel("Family name").fill("");
+  await page.getByLabel("Family name", { exact: true }).fill("");
   await expect(page.getByRole("alert")).toContainText("Enter family name");
   await expect(
     page.getByRole("button", { name: "Download PNG" }),
   ).toBeDisabled();
   await page
-    .getByLabel("Family name")
+    .getByLabel("Family name", { exact: true })
     .fill(
       "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
     );
   await expect(page.getByRole("alert")).toContainText("too wide");
   await page
-    .getByLabel("Family name")
+    .getByLabel("Family name", { exact: true })
     .fill("The Very Merry Anderson and Williams Family");
   await expect(
     page.getByRole("button", { name: "Download PNG" }),
   ).toBeEnabled();
-  await page.getByLabel("Year", { exact: false }).fill("");
+  await page.getByLabel("Year", { exact: true }).fill("");
   await expect(
     page.getByRole("button", { name: "Download PNG" }),
   ).toBeEnabled();
@@ -180,7 +182,7 @@ test("photo crop, personalization, switching, reset, and accurate downloads", as
   await expect(
     page.getByRole("button", { name: "Choose your photo" }),
   ).toBeVisible();
-  await expect(page.getByLabel("Family name")).toHaveValue(
+  await expect(page.getByLabel("Family name", { exact: true })).toHaveValue(
     "The Anderson Family",
   );
   expect(
@@ -200,23 +202,19 @@ test("landscape replacement and invalid uploads preserve a valid card", async ({
     "landscape.webp",
     "image/png",
   );
-  await page
-    .getByLabel("Upload family photo")
-    .setInputFiles({
-      name: "bad.txt",
-      mimeType: "text/plain",
-      buffer: Buffer.from("hello"),
-    });
+  await page.getByLabel("Upload family photo").setInputFiles({
+    name: "bad.txt",
+    mimeType: "text/plain",
+    buffer: Buffer.from("hello"),
+  });
   await expect(page.getByRole("alert")).toContainText(
     "Choose a JPEG, PNG, or WebP",
   );
-  await page
-    .getByLabel("Upload family photo")
-    .setInputFiles({
-      name: "broken.png",
-      mimeType: "image/png",
-      buffer: Buffer.from("broken"),
-    });
+  await page.getByLabel("Upload family photo").setInputFiles({
+    name: "broken.png",
+    mimeType: "image/png",
+    buffer: Buffer.from("broken"),
+  });
   await expect(page.getByRole("alert")).toContainText("couldn’t read");
   await expect(
     page.getByRole("button", { name: "Replace photo" }),

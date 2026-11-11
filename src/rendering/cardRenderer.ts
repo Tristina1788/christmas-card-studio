@@ -2,6 +2,11 @@ import type { PhotoSlot, Template, TextField } from "../config/templates";
 import { photoGeometry, initialCrop, type Crop } from "./photoCrop";
 import { artworkPlacement } from "./artworkPlacement";
 import type { Artwork } from "./assets";
+import { requestedFontSize, type FontSizes } from "./fontSizing";
+export interface RenderResult {
+  errors: string[];
+  fontSizes: FontSizes;
+}
 export type Values = Record<string, string>;
 export interface RenderInput {
   template: Template;
@@ -9,17 +14,19 @@ export interface RenderInput {
   photos: Record<string, ImageBitmap | undefined>;
   crops: Record<string, Crop>;
   values: Values;
+  fontSizes?: FontSizes;
 }
 export function fittedText(
   ctx: CanvasRenderingContext2D,
   field: TextField,
   value: string,
+  requested?: number,
 ) {
-  let size = field.fontSize;
+  let size = requestedFontSize(field, requested);
   while (size > field.minSize) {
     ctx.font = `${size}px ${field.fontFamily}`;
     if (ctx.measureText(value).width <= field.width) break;
-    size--;
+    size = Math.max(field.minSize, size - 1);
   }
   ctx.font = `${size}px ${field.fontFamily}`;
   return { size, fits: ctx.measureText(value).width <= field.width };
@@ -46,7 +53,10 @@ export async function prepareFonts(template: Template) {
   );
   await document.fonts.ready;
 }
-export function renderCard(canvas: HTMLCanvasElement, input: RenderInput) {
+export function renderCard(
+  canvas: HTMLCanvasElement,
+  input: RenderInput,
+): RenderResult {
   const { template: t, artwork, photos, crops, values } = input;
   if (canvas.width !== t.width || canvas.height !== t.height) {
     canvas.width = t.width;
@@ -94,13 +104,15 @@ export function renderCard(canvas: HTMLCanvasElement, input: RenderInput) {
   if (artwork.foreground)
     ctx.drawImage(artwork.foreground, 0, 0, t.width, t.height);
   const errors: string[] = [];
+  const fontSizes: FontSizes = {};
   for (const field of t.textFields.filter((f) => f.visible)) {
     const value = values[field.id] ?? field.defaultValue;
     if (field.required && !value.trim())
       errors.push(`Enter ${field.label.toLowerCase()}.`);
     if (!value) continue;
     ctx.save();
-    const fit = fittedText(ctx, field, value);
+    const fit = fittedText(ctx, field, value, input.fontSizes?.[field.id]);
+    if (fit.fits) fontSizes[field.id] = fit.size;
     if (!fit.fits)
       errors.push(
         `${field.label} is too wide. Please shorten it to fit the safe text area.`,
@@ -121,7 +133,7 @@ export function renderCard(canvas: HTMLCanvasElement, input: RenderInput) {
     ctx.fillText(value, x, field.y + field.height / 2);
     ctx.restore();
   }
-  return errors;
+  return { errors, fontSizes };
 }
 export async function exportCanvas(input: RenderInput) {
   await prepareFonts(input.template);
@@ -131,7 +143,7 @@ export async function exportCanvas(input: RenderInput) {
   )
     throw new Error("Add a photo to every opening before downloading.");
   const canvas = document.createElement("canvas");
-  const errors = renderCard(canvas, input);
+  const { errors } = renderCard(canvas, input);
   if (errors.length) throw new Error(errors.join(" "));
   return canvas;
 }

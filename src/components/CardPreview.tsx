@@ -4,6 +4,7 @@ import {
   renderCard,
   prepareFonts,
   type RenderInput,
+  type RenderResult,
 } from "../rendering/cardRenderer";
 import { clamp, photoGeometry, type Crop } from "../rendering/photoCrop";
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
   slot?: PhotoSlot;
   crop: Crop;
   onCrop: (crop: Crop) => void;
-  onErrors: (errors: string[]) => void;
+  onResult: (result: RenderResult) => void;
   disabled: boolean;
 }
 export function CardPreview({
@@ -19,7 +20,7 @@ export function CardPreview({
   slot,
   crop,
   onCrop,
-  onErrors,
+  onResult,
   disabled,
 }: Props) {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -29,18 +30,21 @@ export function CardPreview({
     prepareFonts(input.template)
       .then(() => {
         if (active && canvas.current)
-          onErrors(renderCard(canvas.current, input));
+          onResult(renderCard(canvas.current, input));
       })
       .catch(() => {
         if (active)
-          onErrors([
-            "The card fonts could not load. Please refresh and try again.",
-          ]);
+          onResult({
+            errors: [
+              "The card fonts could not load. Please refresh and try again.",
+            ],
+            fontSizes: {},
+          });
       });
     return () => {
       active = false;
     };
-  }, [input, onErrors]);
+  }, [input, onResult]);
   const photo = slot && input.photos[slot.id];
   function move(dx: number, dy: number) {
     if (!photo || !slot || disabled) return;

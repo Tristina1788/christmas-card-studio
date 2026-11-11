@@ -10,6 +10,7 @@ export default function App() {
     photos: {},
     crops: {},
     values: {},
+    fontSizes: {},
   });
   const heading = useRef<HTMLDivElement>(null);
   useEffect(() => {

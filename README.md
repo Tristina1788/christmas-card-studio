@@ -49,7 +49,7 @@ To review this branch before merge:
 ```powershell
 cd D:\Projects\Private\christmas-card-studio
 git fetch origin
-git switch feat/expanded-holiday-collection
+git switch feat/font-size-controls
 npm ci --include=dev
 npm run dev
 ```
@@ -69,6 +69,7 @@ npm run dev
 - JPEG, PNG, and WebP uploads with EXIF orientation, file validation, and actionable errors.
 - Fixed cover crop with mouse/touch drag, pinch zoom, keyboard arrows, accessible sliders, and crop reset.
 - One configuration-driven editor supporting multiple photo slots, polygon/rounded masks, optional authored foregrounds, and captions.
+- Font-size sliders for every editable field, with print-point readouts, per-design preferences, and reset. See [font-size controls](docs/FONT_SIZES.md).
 - Font fitting in safe areas. Fields that cannot fit at minimum font size block export instead of clipping silently.
 - Photos/text retained when switching designs; crops stored independently per design. Confirmed Start Over clears everything. State stays in memory while the tab remains open; refreshing or closing clears it.
 - PNG: exactly 1,500 × 2,100 pixels, 300 ppi pHYs metadata.
