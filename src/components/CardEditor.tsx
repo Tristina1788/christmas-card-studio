@@ -2,8 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Template } from "../config/templates";
 import { loadArtwork, decodePhoto, type Artwork } from "../rendering/assets";
 import { effectivePpi, initialCrop, type Crop } from "../rendering/photoCrop";
-import { exportCanvas, type Values } from "../rendering/cardRenderer";
+import {
+  exportCanvas,
+  type Values,
+  type RenderResult,
+} from "../rendering/cardRenderer";
 import { pngBlob, saveBlob } from "../rendering/exportPng";
+import type { FontSizes } from "../rendering/fontSizing";
 import { CardPreview } from "./CardPreview";
 import { PhotoControls } from "./PhotoControls";
 import { PersonalizationPanel } from "./PersonalizationPanel";
@@ -12,6 +17,7 @@ export interface Session {
   photos: Record<string, ImageBitmap | undefined>;
   crops: Record<string, Crop>;
   values: Values;
+  fontSizes: FontSizes;
 }
 export function CardEditor({
   template: t,
@@ -28,6 +34,7 @@ export function CardEditor({
   const [artError, setArtError] = useState("");
   const [error, setError] = useState("");
   const [renderErrors, setRenderErrors] = useState<string[]>([]);
+  const [effectiveFontSizes, setEffectiveFontSizes] = useState<FontSizes>({});
   const [pending, setPending] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [message, setMessage] = useState("");
@@ -72,6 +79,16 @@ export function CardEditor({
       ),
     [session.crops, t],
   );
+  const fontSizes = useMemo(
+    () =>
+      Object.fromEntries(
+        t.textFields.map((field) => [
+          field.id,
+          session.fontSizes?.[`${t.id}:${field.id}`] ?? field.fontSize,
+        ]),
+      ),
+    [t, session.fontSizes],
+  );
   const input = useMemo(
     () =>
       art
@@ -81,17 +98,21 @@ export function CardEditor({
             photos: session.photos,
             crops,
             values: session.values,
+            fontSizes,
           }
         : undefined,
-    [t, art, session.photos, crops, session.values],
+    [t, art, session.photos, crops, session.values, fontSizes],
   );
-  const onErrors = useCallback(
-    (errors: string[]) =>
-      setRenderErrors((previous) =>
-        JSON.stringify(previous) === JSON.stringify(errors) ? previous : errors,
-      ),
-    [],
-  );
+  const onResult = useCallback(({ errors, fontSizes }: RenderResult) => {
+    setRenderErrors((previous) =>
+      JSON.stringify(previous) === JSON.stringify(errors) ? previous : errors,
+    );
+    setEffectiveFontSizes((previous) =>
+      JSON.stringify(previous) === JSON.stringify(fontSizes)
+        ? previous
+        : fontSizes,
+    );
+  }, []);
   const updateCrop = (next: Crop) =>
     onChange({
       ...session,
@@ -180,7 +201,7 @@ export function CardEditor({
                 slot={slot}
                 crop={crop}
                 onCrop={updateCrop}
-                onErrors={onErrors}
+                onResult={onResult}
                 disabled={!!busy || pending || t.status !== "approved"}
               />
             ) : (
@@ -249,6 +270,27 @@ export function CardEditor({
           <PersonalizationPanel
             template={t}
             values={session.values}
+            fontSizes={fontSizes}
+            effectiveFontSizes={effectiveFontSizes}
+            onFontSize={(id, size) =>
+              onChange({
+                ...session,
+                fontSizes: { ...session.fontSizes, [`${t.id}:${id}`]: size },
+              })
+            }
+            onResetFontSizes={() =>
+              onChange({
+                ...session,
+                fontSizes: Object.fromEntries(
+                  Object.entries(session.fontSizes ?? {}).filter(
+                    ([key]) => !key.startsWith(`${t.id}:`),
+                  ),
+                ),
+              })
+            }
+            hasCustomFontSizes={t.textFields.some(
+              (field) => `${t.id}:${field.id}` in (session.fontSizes ?? {}),
+            )}
             onValue={(id, value) =>
               onChange({
                 ...session,
@@ -322,7 +364,7 @@ export function CardEditor({
             className="button"
             onClick={() => {
               Object.values(session.photos).forEach((p) => p?.close());
-              onChange({ photos: {}, crops: {}, values: {} });
+              onChange({ photos: {}, crops: {}, values: {}, fontSizes: {} });
               setError("");
               setMessage("Your card has been reset.");
               setResetConfirm(false);

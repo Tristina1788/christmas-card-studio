@@ -55,3 +55,7 @@ Visual review covers complete decorations, clean rounded/oval boundaries, clear 
 ## Practical limits
 
 Original generated artwork provides approximately 212–216 ppi at 5 × 7 inches. The editor warns that 300 ppi output metadata adds no genuine source detail. Actual-size physical prints, printer color rendering, real Safari/iOS/Firefox devices, and external PDF-viewer rasterization remain unverified. The ten earlier owner-original designs remain separately pending and are not represented as the new generated artwork.
+
+## Font-size controls update
+
+User-selected sizes now apply to family names, optional years, and independently editable greetings. Embedded artwork greetings are preserved. ESLint, TypeScript, the production build, and 94 unit tests passed. The focused editor/crop/gallery/font regression run passed 40 browser tests, with two intentional non-touch skips. New checks verify larger text changes pixels only inside text boxes, resized PNG/preview identity, exact PDF page size, keyboard control, per-design size persistence, both reset actions, long-name fitted-size feedback, and invalid-overflow feedback. Full collection regressions also run in CI. See [font-size guide and screenshots](FONT_SIZES.md).
