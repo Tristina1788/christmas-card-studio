@@ -49,7 +49,7 @@ To review this branch before merge:
 ```powershell
 cd D:\Projects\Private\christmas-card-studio
 git fetch origin
-git switch feat/font-and-free-text-size
+git switch feat/botanical-photo-collection
 npm ci --include=dev
 npm run dev
 ```
@@ -116,3 +116,5 @@ npm run preview -- --port 5174 --strictPort
 ```
 
 Open http://localhost:5174 on the computer running the server. The collection heading should show **16 designs**.
+
+Four new botanical photo cards (20 total), with editable greetings and sample 5 × 7 PDFs: [collection guide](docs/BOTANICAL_COLLECTION.md).

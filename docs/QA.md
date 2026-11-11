@@ -65,3 +65,7 @@ User-selected sizes now apply to family names, optional years, and independently
 Added six font options and a numeric point-size field without a fixed maximum. Explicit sizes bypass automatic fitting and the original text-box clip; defaults retain fitting. Preview and exports await selected fonts. Lora and Great Vibes are self-hosted with OFL licenses. See [the updated guide](FONT_SIZES.md).
 
 Lint, TypeScript, production build, and 95 unit tests pass. Browser checks cover 48 pt year text beyond the old region, font changes, preview/PNG equality, PDF dimensions, sizes above 120 pt, per-card persistence, and Start Over on desktop/tablet/mobile.
+
+## Botanical photo collection
+
+Four new text-free backgrounds bring the collection to 20 designs. All typography remains editable; new designs are featured first. Photo masks preserve the arch, scalloped oval, three ornament frames, and garland ribbons. Sample 5 × 7 PDFs and visual evidence are in [the collection guide](BOTANICAL_COLLECTION.md). Lint, build, and 96 unit tests pass; 12 new browser cases pass across desktop/tablet/mobile. PDF samples were independently rasterized at 300 ppi for comparison with their PNGs.
