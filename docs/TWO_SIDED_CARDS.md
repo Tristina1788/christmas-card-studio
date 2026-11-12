@@ -1,5 +1,7 @@
 # Two-sided 5 × 7-inch cards
 
+For a greeting card that folds in half, use the separate [folded card PDF option](FOLDED_CARDS.md). It places the back and front together on a 10 x 7-inch outside spread, with a blank inside.
+
 Every card now has a front and a back. Each side has its own 1,500 × 2,100-pixel canvas, sized for a 5 × 7-inch print. The editor has Front / Back buttons and previews the selected side using the same renderer as downloads.
 
 ## Downloads
@@ -43,3 +45,4 @@ The two-sided browser test independently decodes each PDF page's embedded RGB im
 - `botanical.png`: `f60d5560d0ba6771757c0d09fd216352e3c11830d8afca5555d3ea54b748d49e`
 - `evergreen.png`: `bc30c3b3d41dfa208c7ae41c9cf4aa7405501dad2723701def9f7c3d54a65149`
 - `ribbon.png`: `d19d8dfcf523db03328036c8416c3a4b67707124cd6066e865130bdb26d69506`
+
