@@ -62,6 +62,7 @@ export const templateSchema = z
     backBackground: assetPath.optional(),
     side: z.enum(["front", "back"]).optional(),
     backgroundFit: z.enum(["exact", "contain"]).optional(),
+    solidBackground: z.string().regex(/^#[0-9a-f]{6}$/i).optional(),
     paperColor: z
       .string()
       .regex(/^#[0-9a-f]{6}$/i)

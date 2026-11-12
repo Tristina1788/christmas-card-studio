@@ -36,8 +36,8 @@ export function CardEditor({
   const [side, setSide] = useState<CardSide>("front");
   const layout = session.backLayouts?.[front.id] ?? "message";
   const t = useMemo(
-    () => sideTemplate(front, side, layout),
-    [front, side, layout],
+    () => sideTemplate(front, side, layout, session.backStyles?.[front.id]),
+    [front, side, layout, session.backStyles],
   );
   const key = (id: string) => preferenceKey(front.id, side, id);
   const valueId = (id: string) => valueKey(front.id, side, id);
@@ -110,7 +110,7 @@ export function CardEditor({
     });
   const allPhotos = t.photoSlots.every((s) => input?.photos[s.id]);
   const sideReady = (target: CardSide) => {
-    const design = sideTemplate(front, target, layout);
+    const design = sideTemplate(front, target, layout, session.backStyles?.[front.id]);
     return (
       front.status === "approved" &&
       !pending &&
@@ -290,6 +290,24 @@ export function CardEditor({
           )}
           {side === "back" && (
             <label className="text-control">
+              <span>Back side style</span>
+              <select
+                aria-label="Back side style"
+                value={session.backStyles?.[front.id] ?? "matching"}
+                disabled={!!busy || pending}
+                onChange={(event) => onChange({
+                  ...session,
+                  backStyles: { ...session.backStyles, [front.id]: event.target.value as "matching" | "decorative" | "blank" },
+                })}
+              >
+                <option value="matching">Matching front color</option>
+                <option value="decorative">Decorative back</option>
+                <option value="blank">Blank white back</option>
+              </select>
+            </label>
+          )}
+          {side === "back" && (session.backStyles?.[front.id] ?? "matching") !== "blank" && (
+            <label className="text-control">
               <span>Back layout</span>
               <select
                 aria-label="Back layout"
@@ -461,6 +479,7 @@ export function CardEditor({
                 fontSizes: {},
                 fontFamilies: {},
                 backLayouts: {},
+                backStyles: {},
               });
               setError("");
               setMessage("Your card has been reset.");
