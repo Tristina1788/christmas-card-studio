@@ -1,0 +1,162 @@
+[
+  {
+    "id": "31",
+    "name": "Winter Ribbon Letter",
+    "description": "Approved raster watercolor single-photo card; pending artwork and photo-slot verification.",
+    "palette": "cranberry",
+    "background": "/templates/approved-2026/winter-ribbon-letter.png",
+    "backBackground": "/templates/backs/ribbon.png",
+    "foreground": null,
+    "galleryPhoto": "/templates/sample-family.png",
+    "width": 1500,
+    "height": 2100,
+    "printWidth": 5,
+    "printHeight": 7,
+    "safeMargin": 75,
+    "status": "needs-review",
+    "reviewNote": "Approved concept only; PNG assets and photo-slot coordinates must be committed and visually verified before registering in the live manifest.",
+    "featured": true,
+    "photoSlots": [
+      {
+        "id": "photo",
+        "label": "Main photo",
+        "x": 316,
+        "y": 671,
+        "width": 883,
+        "height": 1150,
+        "shape": "rounded",
+        "radius": 40,
+        "matteColor": "#d3d3cf"
+      }
+    ],
+    "textFields": []
+  },
+  {
+    "id": "32",
+    "name": "Heirloom Arch",
+    "description": "Approved raster watercolor single-photo card; pending artwork and photo-slot verification.",
+    "palette": "sage",
+    "background": "/templates/approved-2026/heirloom-arch.png",
+    "backBackground": "/templates/backs/botanical.png",
+    "foreground": null,
+    "galleryPhoto": "/templates/sample-family.png",
+    "width": 1500,
+    "height": 2100,
+    "printWidth": 5,
+    "printHeight": 7,
+    "safeMargin": 75,
+    "status": "needs-review",
+    "reviewNote": "Approved concept only; PNG assets and photo-slot coordinates must be committed and visually verified before registering in the live manifest.",
+    "featured": true,
+    "photoSlots": [
+      {
+        "id": "photo",
+        "label": "Main photo",
+        "x": 246,
+        "y": 623,
+        "width": 1000,
+        "height": 1169,
+        "shape": "rounded",
+        "radius": 40,
+        "matteColor": "#d3d3cf"
+      }
+    ],
+    "textFields": []
+  },
+  {
+    "id": "33",
+    "name": "Cranberry Candy Stripes",
+    "description": "Approved raster watercolor single-photo card; pending artwork and photo-slot verification.",
+    "palette": "cranberry",
+    "background": "/templates/approved-2026/cranberry-candy-stripes.png",
+    "backBackground": "/templates/backs/ribbon.png",
+    "foreground": null,
+    "galleryPhoto": "/templates/sample-family.png",
+    "width": 1500,
+    "height": 2100,
+    "printWidth": 5,
+    "printHeight": 7,
+    "safeMargin": 75,
+    "status": "needs-review",
+    "reviewNote": "Approved concept only; PNG assets and photo-slot coordinates must be committed and visually verified before registering in the live manifest.",
+    "featured": true,
+    "photoSlots": [
+      {
+        "id": "photo",
+        "label": "Main photo",
+        "x": 260,
+        "y": 650,
+        "width": 980,
+        "height": 1120,
+        "shape": "rounded",
+        "radius": 40,
+        "matteColor": "#d3d3cf"
+      }
+    ],
+    "textFields": []
+  },
+  {
+    "id": "34",
+    "name": "Sage Scandi Stripes",
+    "description": "Approved raster watercolor single-photo card; pending artwork and photo-slot verification.",
+    "palette": "sage",
+    "background": "/templates/approved-2026/sage-scandi-stripes.png",
+    "backBackground": "/templates/backs/botanical.png",
+    "foreground": null,
+    "galleryPhoto": "/templates/sample-family.png",
+    "width": 1500,
+    "height": 2100,
+    "printWidth": 5,
+    "printHeight": 7,
+    "safeMargin": 75,
+    "status": "needs-review",
+    "reviewNote": "Approved concept only; PNG assets and photo-slot coordinates must be committed and visually verified before registering in the live manifest.",
+    "featured": true,
+    "photoSlots": [
+      {
+        "id": "photo",
+        "label": "Main photo",
+        "x": 265,
+        "y": 645,
+        "width": 970,
+        "height": 1130,
+        "shape": "rounded",
+        "radius": 40,
+        "matteColor": "#d3d3cf"
+      }
+    ],
+    "textFields": []
+  },
+  {
+    "id": "35",
+    "name": "Midnight Lights",
+    "description": "Approved raster watercolor single-photo card; pending artwork and photo-slot verification.",
+    "palette": "navy",
+    "background": "/templates/approved-2026/midnight-lights.png",
+    "backBackground": "/templates/backs/ribbon.png",
+    "foreground": null,
+    "galleryPhoto": "/templates/sample-family.png",
+    "width": 1500,
+    "height": 2100,
+    "printWidth": 5,
+    "printHeight": 7,
+    "safeMargin": 75,
+    "status": "needs-review",
+    "reviewNote": "Approved concept only; PNG assets and photo-slot coordinates must be committed and visually verified before registering in the live manifest.",
+    "featured": true,
+    "photoSlots": [
+      {
+        "id": "photo",
+        "label": "Main photo",
+        "x": 280,
+        "y": 660,
+        "width": 940,
+        "height": 1110,
+        "shape": "rounded",
+        "radius": 40,
+        "matteColor": "#d3d3cf"
+      }
+    ],
+    "textFields": []
+  }
+]
