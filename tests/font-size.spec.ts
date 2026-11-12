@@ -62,7 +62,7 @@ test("text sizes change printed text, match exports, persist per card, and reset
   await open(page);
   await page.getByLabel("Family name", { exact: true }).fill("The Lee Family");
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeEnabled();
   const initial = await canvas(page);
   const family = page.getByRole("slider", {
@@ -99,11 +99,11 @@ test("text sizes change printed text, match exports, persist per card, and reset
     }
   expect(insideChanges).toBeGreaterThan(100);
   expect(outsideChanges).toBe(0);
-  const png = PNG.sync.read(await download(page, "Download PNG"));
+  const png = PNG.sync.read(await download(page, "Download front PNG"));
   expect(Buffer.compare(png.data, changed.data)).toBe(0);
   expect([png.width, png.height]).toEqual([1500, 2100]);
   const pdf = await PDFDocument.load(await download(page, "Download PDF"));
-  expect(pdf.getPageCount()).toBe(1);
+  expect(pdf.getPageCount()).toBe(2);
   expect(pdf.getPage(0).getSize()).toEqual({ width: 360, height: 504 });
   await page.evaluate(() => scrollTo(0, 0));
   await page.screenshot({
@@ -127,7 +127,7 @@ test("text sizes change printed text, match exports, persist per card, and reset
     "The Lee Family",
   );
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeEnabled();
   await page.getByRole("button", { name: "Start Over", exact: true }).click();
   await page.getByRole("button", { name: "Yes, start over" }).click();
@@ -135,7 +135,7 @@ test("text sizes change printed text, match exports, persist per card, and reset
   await select(page, "Holly & Pine");
   await expect(family).toHaveValue("15.36");
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeDisabled();
   expect(
     await page.evaluate(
@@ -155,7 +155,7 @@ test("long names show actual fitted size and artwork greetings have no size cont
     .fill("The Anderson and Williams Family");
   await expect(page.getByText(/^Auto-fitted to/)).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeEnabled();
   await page.evaluate(() => scrollTo(0, 0));
   await page.screenshot({
@@ -168,7 +168,7 @@ test("long names show actual fitted size and artwork greetings have no size cont
   await page.getByLabel("Family name", { exact: true }).fill("");
   await expect(page.getByRole("alert")).toContainText("Enter family name");
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeDisabled();
   await page.getByRole("button", { name: /Back to collection/ }).click();
   await select(page, "Botanical Noel");
@@ -240,7 +240,7 @@ test("fonts and unrestricted year size print exactly, persist per design, and re
   await yearSize.fill("48");
   await yearSize.blur();
   const printed = await canvas(page);
-  const png = PNG.sync.read(await download(page, "Download PNG"));
+  const png = PNG.sync.read(await download(page, "Download front PNG"));
   expect(Buffer.compare(png.data, printed.data)).toBe(0);
   const pdf = await PDFDocument.load(await download(page, "Download PDF"));
   expect(pdf.getPage(0).getSize()).toEqual({ width: 360, height: 504 });
@@ -254,7 +254,7 @@ test("fonts and unrestricted year size print exactly, persist per design, and re
   await yearSize.blur();
   await expect(yearSize).toHaveValue("150");
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeEnabled();
   await page.getByRole("button", { name: /Back to collection/ }).click();
   await select(page, "Holly & Pine");

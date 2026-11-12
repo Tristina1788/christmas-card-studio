@@ -59,6 +59,8 @@ export const templateSchema = z
       "berry",
     ]),
     background: assetPath,
+    backBackground: assetPath.optional(),
+    side: z.enum(["front", "back"]).optional(),
     backgroundFit: z.enum(["exact", "contain"]).optional(),
     paperColor: z
       .string()
@@ -127,7 +129,7 @@ export const templateSchema = z
       )
         issue("Text cannot overlap a photo slot");
     }
-    if (t.status === "approved" && !t.photoSlots.length)
+    if (t.status === "approved" && t.side !== "back" && !t.photoSlots.length)
       issue("Approved templates require verified photo slots");
   });
 export type Template = z.infer<typeof templateSchema>;

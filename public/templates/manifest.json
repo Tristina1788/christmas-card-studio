@@ -3498,7 +3498,8 @@
         "visible": true,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/berry.png"
   },
   {
     "id": "12",
@@ -3583,7 +3584,8 @@
         "visible": true,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/ribbon.png"
   },
   {
     "id": "13",
@@ -3668,7 +3670,8 @@
         "visible": true,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/berry.png"
   },
   {
     "id": "14",
@@ -3772,7 +3775,8 @@
         "visible": true,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/berry.png"
   },
   {
     "id": "15",
@@ -7840,7 +7844,8 @@
         "visible": true,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/evergreen.png"
   },
   {
     "id": "16",
@@ -7908,7 +7913,8 @@
         "visible": true,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/berry.png"
   },
   {
     "id": "17",
@@ -7976,7 +7982,8 @@
         "visible": true,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/ribbon.png"
   },
   {
     "id": "18",
@@ -8044,7 +8051,8 @@
         "visible": true,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/evergreen.png"
   },
   {
     "id": "19",
@@ -8112,7 +8120,8 @@
         "visible": true,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/evergreen.png"
   },
   {
     "id": "20",
@@ -8182,7 +8191,8 @@
       }
     ],
     "backgroundFit": "contain",
-    "paperColor": "#fcf0dd"
+    "paperColor": "#fcf0dd",
+    "backBackground": "/templates/backs/evergreen.png"
   },
   {
     "id": "21",
@@ -8252,7 +8262,8 @@
       }
     ],
     "backgroundFit": "contain",
-    "paperColor": "#fdf0d9"
+    "paperColor": "#fdf0d9",
+    "backBackground": "/templates/backs/evergreen.png"
   },
   {
     "id": "22",
@@ -8320,7 +8331,8 @@
         "visible": true,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/evergreen.png"
   },
   {
     "id": "23",
@@ -8388,7 +8400,8 @@
         "visible": true,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/evergreen.png"
   },
   {
     "id": "24",
@@ -8458,7 +8471,8 @@
       }
     ],
     "backgroundFit": "contain",
-    "paperColor": "#cbc398"
+    "paperColor": "#cbc398",
+    "backBackground": "/templates/backs/ribbon.png"
   },
   {
     "id": "25",
@@ -8528,7 +8542,8 @@
       }
     ],
     "backgroundFit": "contain",
-    "paperColor": "#eef0f3"
+    "paperColor": "#eef0f3",
+    "backBackground": "/templates/backs/evergreen.png"
   },
   {
     "id": "26",
@@ -8598,7 +8613,8 @@
       }
     ],
     "backgroundFit": "contain",
-    "paperColor": "#6f7b4f"
+    "paperColor": "#6f7b4f",
+    "backBackground": "/templates/backs/berry.png"
   },
   {
     "id": "27",
@@ -9061,7 +9077,8 @@
         "maxLength": 60,
         "defaultValue": "The Anderson Family"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/botanical.png"
   },
   {
     "id": "28",
@@ -11332,7 +11349,8 @@
         "maxLength": 8,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/evergreen.png"
   },
   {
     "id": "29",
@@ -12139,7 +12157,8 @@
         "maxLength": 8,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/berry.png"
   },
   {
     "id": "30",
@@ -12224,6 +12243,7 @@
         "maxLength": 8,
         "defaultValue": "2026"
       }
-    ]
+    ],
+    "backBackground": "/templates/backs/ribbon.png"
   }
 ]

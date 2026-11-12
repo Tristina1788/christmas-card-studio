@@ -2,27 +2,27 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Template } from "../config/templates";
 import { loadArtwork, decodePhoto, type Artwork } from "../rendering/assets";
 import { effectivePpi, initialCrop, type Crop } from "../rendering/photoCrop";
-import {
-  exportCanvas,
-  type Values,
-  type RenderResult,
-} from "../rendering/cardRenderer";
+import { type RenderResult } from "../rendering/cardRenderer";
 import { pngBlob, saveBlob } from "../rendering/exportPng";
 import type { FontSizes } from "../rendering/fontSizing";
 import { CardPreview } from "./CardPreview";
 import { PhotoControls } from "./PhotoControls";
 import { PersonalizationPanel } from "./PersonalizationPanel";
 import { DownloadPanel } from "./DownloadPanel";
-import type { FontFamilies } from "../rendering/fonts";
-export interface Session {
-  photos: Record<string, ImageBitmap | undefined>;
-  crops: Record<string, Crop>;
-  values: Values;
-  fontSizes: FontSizes;
-  fontFamilies: FontFamilies;
-}
+import {
+  sideTemplate,
+  sideInput,
+  preferenceKey,
+  photoKey,
+  valueKey,
+  exportSide,
+  exportBothSides,
+  type Session,
+  type CardSide,
+} from "../rendering/cardSides";
+export type { Session } from "../rendering/cardSides";
 export function CardEditor({
-  template: t,
+  template: front,
   session,
   onChange,
   onBack,
@@ -32,7 +32,16 @@ export function CardEditor({
   onChange: (session: Session) => void;
   onBack: () => void;
 }) {
-  const [art, setArt] = useState<Artwork>();
+  const [side, setSide] = useState<CardSide>("front");
+  const layout = session.backLayouts?.[front.id] ?? "message";
+  const t = useMemo(
+    () => sideTemplate(front, side, layout),
+    [front, side, layout],
+  );
+  const key = (id: string) => preferenceKey(front.id, side, id);
+  const valueId = (id: string) => valueKey(front.id, side, id);
+  const [loaded, setArt] = useState<{ template: Template; asset: Artwork }>();
+  const art = loaded?.template === t ? loaded.asset : undefined;
   const [artError, setArtError] = useState("");
   const [error, setError] = useState("");
   const [renderErrors, setRenderErrors] = useState<string[]>([]);
@@ -60,7 +69,10 @@ export function CardEditor({
     let active = true;
     loadArtwork(t)
       .then((asset) => {
-        if (active) setArt(asset);
+        if (active) {
+          setArt({ template: t, asset });
+          setArtError("");
+        }
       })
       .catch((e) => {
         if (active) setArtError(e.message);
@@ -69,54 +81,17 @@ export function CardEditor({
       active = false;
     };
   }, [t]);
-  const slot = t.photoSlots.find((s) => s.id === slotId);
-  const crop = session.crops[`${t.id}:${slotId}`] ?? initialCrop();
-  const crops = useMemo(
-    () =>
-      Object.fromEntries(
-        t.photoSlots.map((s) => [
-          s.id,
-          session.crops[`${t.id}:${s.id}`] ?? initialCrop(),
-        ]),
-      ),
-    [session.crops, t],
-  );
-  const fontSizes = useMemo(
-    () =>
-      Object.fromEntries(
-        t.textFields
-          .filter(
-            (field) => session.fontSizes?.[`${t.id}:${field.id}`] !== undefined,
-          )
-          .map((field) => [field.id, session.fontSizes[`${t.id}:${field.id}`]]),
-      ),
-    [t, session.fontSizes],
-  );
-  const fontFamilies = useMemo(
-    () =>
-      Object.fromEntries(
-        t.textFields.map((field) => [
-          field.id,
-          session.fontFamilies?.[`${t.id}:${field.id}`] ?? field.fontFamily,
-        ]),
-      ),
-    [t, session.fontFamilies],
-  );
+  const slot = t.photoSlots.find((s) => s.id === slotId) ?? t.photoSlots[0];
+  const selectedSlot = slot?.id ?? "photo";
+  const crop = session.crops[key(selectedSlot)] ?? initialCrop();
   const input = useMemo(
-    () =>
-      art
-        ? {
-            template: t,
-            artwork: art,
-            photos: session.photos,
-            crops,
-            values: session.values,
-            fontSizes,
-            fontFamilies,
-          }
-        : undefined,
-    [t, art, session.photos, crops, session.values, fontSizes, fontFamilies],
+    () => (art ? sideInput(front, session, side, art) : undefined),
+    [front, session, side, art],
   );
+  const crops = input?.crops ?? {};
+  const fontSizes = input?.fontSizes ?? {};
+  const fontFamilies = input?.fontFamilies ?? {};
+  const values = input?.values ?? {};
   const onResult = useCallback(({ errors, fontSizes }: RenderResult) => {
     setRenderErrors((previous) =>
       JSON.stringify(previous) === JSON.stringify(errors) ? previous : errors,
@@ -130,10 +105,19 @@ export function CardEditor({
   const updateCrop = (next: Crop) =>
     onChange({
       ...session,
-      crops: { ...session.crops, [`${t.id}:${slotId}`]: next },
+      crops: { ...session.crops, [key(selectedSlot)]: next },
     });
-  const allPhotos =
-    t.photoSlots.length > 0 && t.photoSlots.every((s) => session.photos[s.id]);
+  const allPhotos = t.photoSlots.every((s) => input?.photos[s.id]);
+  const sideReady = (target: CardSide) => {
+    const design = sideTemplate(front, target, layout);
+    return (
+      front.status === "approved" &&
+      !pending &&
+      design.photoSlots.every(
+        (s) => session.photos[photoKey(front.id, target, s.id)],
+      )
+    );
+  };
   const blocked =
     t.status !== "approved" ||
     !input ||
@@ -150,11 +134,14 @@ export function CardEditor({
         bitmap.close();
         return;
       }
-      session.photos[slotId]?.close();
+      session.photos[photoKey(front.id, side, selectedSlot)]?.close();
       onChange({
         ...session,
-        photos: { ...session.photos, [slotId]: bitmap },
-        crops: { ...session.crops, [`${t.id}:${slotId}`]: initialCrop() },
+        photos: {
+          ...session.photos,
+          [photoKey(front.id, side, selectedSlot)]: bitmap,
+        },
+        crops: { ...session.crops, [key(selectedSlot)]: initialCrop() },
       });
       setMessage("Your photo is ready.");
     } catch (e) {
@@ -163,30 +150,41 @@ export function CardEditor({
       if (alive.current) setPending(false);
     }
   }
-  async function download(format: "png" | "pdf") {
-    if (!input || blocked || busy) return;
+  async function download(format: "front" | "back" | "pdf") {
+    if (busy || pending) return;
     setBusy(format);
     setError("");
     setMessage("");
     try {
-      const canvas = await exportCanvas(input);
       const blob =
-        format === "png"
-          ? await pngBlob(canvas)
-          : (await import("../rendering/exportPdf")).pdfBlob(canvas);
-      saveBlob(blob, `christmas-${t.id}.${format}`);
+        format === "pdf"
+          ? (await import("../rendering/exportPdf")).pdfBlob(
+              await exportBothSides(front, session),
+            )
+          : await pngBlob(await exportSide(front, session, format));
+      saveBlob(
+        blob,
+        format === "pdf"
+          ? `christmas-${front.id}-front-and-back.pdf`
+          : `christmas-${front.id}-${format}.png`,
+      );
       setMessage(
-        `Your ${format.toUpperCase()} is ready. Print at Actual Size / 100%.`,
+        format === "pdf"
+          ? "Your two-page PDF is ready. Page 1: front. Page 2: back."
+          : `Your ${format} PNG is ready.`,
       );
     } catch (e) {
-      setError((e as Error).message);
+      const message = (e as Error).message;
+      setError(message);
+      if (message.startsWith("Back:")) setSide("back");
+      if (message.startsWith("Front:")) setSide("front");
     } finally {
       setBusy(null);
     }
   }
   const lowPhoto = t.photoSlots
     .map((s) => {
-      const p = session.photos[s.id];
+      const p = input?.photos[s.id];
       return p ? effectivePpi(p, s, crops[s.id]) : null;
     })
     .filter((p): p is number => p !== null && p < 300);
@@ -202,9 +200,29 @@ export function CardEditor({
       <div className="editor-heading">
         <div>
           <div className="eyebrow">MAKE IT YOURS · DESIGN {t.id}</div>
-          <h1>{t.name}</h1>
+          <h1>{front.name}</h1>
         </div>
-        <span className="format-tag">5 × 7 INCHES</span>
+        <span className="format-tag">5 × 7 INCHES · 2 SIDES</span>
+      </div>
+      <div className="side-switch" role="group" aria-label="Card side">
+        {(["front", "back"] as const).map((value) => (
+          <button
+            key={value}
+            className={side === value ? "button" : "button secondary"}
+            aria-pressed={side === value}
+            disabled={!!busy || pending}
+            onClick={() => {
+              setSide(value);
+              setSlotId(
+                value === "front"
+                  ? (front.photoSlots[0]?.id ?? "photo")
+                  : "back-main",
+              );
+            }}
+          >
+            {value === "front" ? "Front" : "Back"}
+          </button>
+        ))}
       </div>
       <div className="editor-layout">
         <div className="preview-column">
@@ -237,7 +255,7 @@ export function CardEditor({
           </div>
           <p className="preview-caption">
             {input
-              ? "YOUR PRINTABLE CARD · 5 × 7 INCHES"
+              ? `YOUR PRINTABLE CARD · ${side.toUpperCase()} · 5 × 7 INCHES`
               : "PREVIEW AWAITING ORIGINAL ARTWORK"}
           </p>
         </div>
@@ -257,12 +275,34 @@ export function CardEditor({
               </div>
             </div>
           )}
+          {side === "back" && (
+            <label className="text-control">
+              <span>Back layout</span>
+              <select
+                aria-label="Back layout"
+                value={layout}
+                disabled={!!busy || pending}
+                onChange={(event) =>
+                  onChange({
+                    ...session,
+                    backLayouts: {
+                      ...session.backLayouts,
+                      [front.id]: event.target.value as "message" | "collage",
+                    },
+                  })
+                }
+              >
+                <option value="message">Message only</option>
+                <option value="collage">Three-photo collage</option>
+              </select>
+            </label>
+          )}
           {t.photoSlots.length > 1 && (
             <label className="text-control">
               Photo opening
               <select
                 aria-label="Photo opening"
-                value={slotId}
+                value={selectedSlot}
                 disabled={!!busy || pending}
                 onChange={(e) => setSlotId(e.target.value)}
               >
@@ -274,17 +314,19 @@ export function CardEditor({
               </select>
             </label>
           )}
-          <PhotoControls
-            hasPhoto={!!session.photos[slotId]}
-            crop={crop}
-            onCrop={updateCrop}
-            onFile={upload}
-            disabled={!!busy || pending}
-            pending={pending}
-          />
+          {t.photoSlots.length > 0 && (
+            <PhotoControls
+              hasPhoto={!!input?.photos[selectedSlot]}
+              crop={crop}
+              onCrop={updateCrop}
+              onFile={upload}
+              disabled={!!busy || pending}
+              pending={pending}
+            />
+          )}
           <PersonalizationPanel
             template={t}
-            values={session.values}
+            values={values}
             fontSizes={fontSizes}
             fontFamilies={fontFamilies}
             onFontFamily={(id, family) =>
@@ -292,7 +334,7 @@ export function CardEditor({
                 ...session,
                 fontFamilies: {
                   ...session.fontFamilies,
-                  [`${t.id}:${id}`]: family,
+                  [key(id)]: family,
                 },
               })
             }
@@ -300,7 +342,7 @@ export function CardEditor({
             onFontSize={(id, size) =>
               onChange({
                 ...session,
-                fontSizes: { ...session.fontSizes, [`${t.id}:${id}`]: size },
+                fontSizes: { ...session.fontSizes, [key(id)]: size },
               })
             }
             onResetFontSizes={() =>
@@ -308,18 +350,22 @@ export function CardEditor({
                 ...session,
                 fontSizes: Object.fromEntries(
                   Object.entries(session.fontSizes ?? {}).filter(
-                    ([key]) => !key.startsWith(`${t.id}:`),
+                    ([key]) =>
+                      !(side === "back"
+                        ? key.startsWith(`${front.id}:back:`)
+                        : key.startsWith(`${front.id}:`) &&
+                          !key.startsWith(`${front.id}:back:`)),
                   ),
                 ),
               })
             }
             hasCustomFontSizes={t.textFields.some(
-              (field) => `${t.id}:${field.id}` in (session.fontSizes ?? {}),
+              (field) => key(field.id) in (session.fontSizes ?? {}),
             )}
             onValue={(id, value) =>
               onChange({
                 ...session,
-                values: { ...session.values, [id]: value },
+                values: { ...session.values, [valueId(id)]: value },
               })
             }
             disabled={!!busy || pending || t.status !== "approved"}
@@ -352,7 +398,13 @@ export function CardEditor({
               Add a photo to every opening to enable downloads.
             </p>
           )}
-          <DownloadPanel disabled={blocked} busy={busy} onDownload={download} />
+          <DownloadPanel
+            frontDisabled={!sideReady("front") || (side === "front" && blocked)}
+            backDisabled={!sideReady("back") || (side === "back" && blocked)}
+            pdfDisabled={!sideReady("front") || !sideReady("back") || blocked}
+            busy={busy}
+            onDownload={download}
+          />
           <p className="status-message" role="status">
             {message}
           </p>
@@ -395,6 +447,7 @@ export function CardEditor({
                 values: {},
                 fontSizes: {},
                 fontFamilies: {},
+                backLayouts: {},
               });
               setError("");
               setMessage("Your card has been reset.");

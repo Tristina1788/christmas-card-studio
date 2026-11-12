@@ -94,7 +94,7 @@ test("photo crop, personalization, switching, reset, and accurate downloads", as
     await page.mouse.up();
   }
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeEnabled();
   await expect
     .poll(async () => {
@@ -105,7 +105,7 @@ test("photo crop, personalization, switching, reset, and accurate downloads", as
   const preview = PNG.sync.read(
     Buffer.from((await canvasData(page)).split(",")[1], "base64"),
   );
-  const bytes = await downloaded(page, "Download PNG");
+  const bytes = await downloaded(page, "Download front PNG");
   const png = PNG.sync.read(bytes);
   expect([png.width, png.height]).toEqual([1500, 2100]);
   expect(Buffer.compare(png.data, preview.data)).toBe(0);
@@ -127,7 +127,7 @@ test("photo crop, personalization, switching, reset, and accurate downloads", as
   const at = (800 * 1500 + 750) * 4;
   expect([...png.data.subarray(at, at + 3)]).not.toEqual([170, 170, 170]);
   const pdf = await PDFDocument.load(await downloaded(page, "Download PDF"));
-  expect(pdf.getPageCount()).toBe(1);
+  expect(pdf.getPageCount()).toBe(2);
   expect(pdf.getPage(0).getSize()).toEqual({ width: 360, height: 504 });
   await page.evaluate(() => scrollTo(0, 0));
   await page.screenshot({
@@ -154,7 +154,7 @@ test("photo crop, personalization, switching, reset, and accurate downloads", as
   await page.getByLabel("Family name", { exact: true }).fill("");
   await expect(page.getByRole("alert")).toContainText("Enter family name");
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeDisabled();
   await page
     .getByLabel("Family name", { exact: true })
@@ -166,11 +166,11 @@ test("photo crop, personalization, switching, reset, and accurate downloads", as
     .getByLabel("Family name", { exact: true })
     .fill("The Very Merry Anderson and Williams Family");
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeEnabled();
   await page.getByLabel("Year", { exact: true }).fill("");
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeEnabled();
   await page.getByRole("button", { name: "Start Over", exact: true }).click();
   await page.getByRole("button", { name: "Keep editing" }).click();
@@ -220,7 +220,7 @@ test("landscape replacement and invalid uploads preserve a valid card", async ({
     page.getByRole("button", { name: "Replace photo" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeEnabled();
 });
 test("EXIF phone orientation is honored", async ({ page }) => {
@@ -245,9 +245,9 @@ test("EXIF phone orientation is honored", async ({ page }) => {
   const oriented = Buffer.concat([jpeg.subarray(0, 2), exif, jpeg.subarray(2)]);
   await upload(page, oriented, "phone.jpg", "image/jpeg");
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeEnabled();
-  const output = PNG.sync.read(await downloaded(page, "Download PNG"));
+  const output = PNG.sync.read(await downloaded(page, "Download front PNG"));
   const left = (900 * 1500 + 230) * 4,
     right = (900 * 1500 + 1270) * 4;
   expect(output.data[left + 2]).toBeGreaterThan(output.data[left]);
@@ -270,6 +270,6 @@ test("missing or wrong-ratio approved artwork fails safely", async ({
     }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeDisabled();
 });

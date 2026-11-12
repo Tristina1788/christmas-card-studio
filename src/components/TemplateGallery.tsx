@@ -137,7 +137,7 @@ export function TemplateGallery({
           Find your Christmas card <span aria-hidden="true">→</span>
         </a>
         <div className="hero-note">
-          Made yours, in minutes · Printable 5 × 7 inch cards
+          Made yours, in minutes · Two-sided 5 × 7 inch cards
         </div>
       </section>
       <section className="how-it-works" aria-label="How it works">
@@ -191,7 +191,7 @@ export function TemplateGallery({
               >
                 <div className="artwork-wrap">
                   <TemplateArtwork template={t} />
-                  <span className="template-format">5 × 7 IN</span>
+                  <span className="template-format">5 × 7 IN · 2 SIDES</span>
                 </div>
                 <div className="template-card-info">
                   <span className="tiny-label">

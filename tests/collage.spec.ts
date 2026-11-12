@@ -37,11 +37,11 @@ test("collage keeps four uploaded photos independent and requires every opening"
     ).toBeVisible();
     if (i < 3)
       await expect(
-        page.getByRole("button", { name: "Download PNG" }),
+        page.getByRole("button", { name: "Download front PNG" }),
       ).toBeDisabled();
   }
   await expect(
-    page.getByRole("button", { name: "Download PNG" }),
+    page.getByRole("button", { name: "Download front PNG" }),
   ).toBeEnabled();
   const centers = () =>
     page
