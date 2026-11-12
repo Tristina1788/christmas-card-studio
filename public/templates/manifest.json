@@ -12261,18 +12261,18 @@
     "printHeight": 7,
     "safeMargin": 75,
     "status": "needs-review",
-    "reviewNote": "Approved concept only; PNG assets and photo-slot coordinates must be committed and visually verified before registering in the live manifest.",
+    "reviewNote": "Provisional inset photo slot adjusted to reduce overlap with decorative artwork. Original PNG may contain baked-in sample photography or lettering; visual review and clean artwork are required before approving downloads.",
     "featured": true,
     "photoSlots": [
       {
         "id": "photo",
         "label": "Main photo",
-        "x": 316,
-        "y": 671,
-        "width": 883,
-        "height": 1150,
+        "x": 340,
+        "y": 715,
+        "width": 820,
+        "height": 1020,
         "shape": "rounded",
-        "radius": 40,
+        "radius": 24,
         "matteColor": "#d3d3cf"
       }
     ],
@@ -12293,18 +12293,18 @@
     "printHeight": 7,
     "safeMargin": 75,
     "status": "needs-review",
-    "reviewNote": "Approved concept only; PNG assets and photo-slot coordinates must be committed and visually verified before registering in the live manifest.",
+    "reviewNote": "Provisional inset photo slot adjusted to reduce overlap with decorative artwork. Original PNG may contain baked-in sample photography or lettering; visual review and clean artwork are required before approving downloads.",
     "featured": true,
     "photoSlots": [
       {
         "id": "photo",
         "label": "Main photo",
-        "x": 246,
-        "y": 623,
-        "width": 1000,
-        "height": 1169,
+        "x": 285,
+        "y": 670,
+        "width": 930,
+        "height": 1020,
         "shape": "rounded",
-        "radius": 40,
+        "radius": 24,
         "matteColor": "#d3d3cf"
       }
     ],
@@ -12325,18 +12325,18 @@
     "printHeight": 7,
     "safeMargin": 75,
     "status": "needs-review",
-    "reviewNote": "Approved concept only; PNG assets and photo-slot coordinates must be committed and visually verified before registering in the live manifest.",
+    "reviewNote": "Provisional inset photo slot adjusted to reduce overlap with decorative artwork. Original PNG may contain baked-in sample photography or lettering; visual review and clean artwork are required before approving downloads.",
     "featured": true,
     "photoSlots": [
       {
         "id": "photo",
         "label": "Main photo",
-        "x": 260,
-        "y": 650,
-        "width": 980,
-        "height": 1120,
+        "x": 300,
+        "y": 735,
+        "width": 900,
+        "height": 965,
         "shape": "rounded",
-        "radius": 40,
+        "radius": 24,
         "matteColor": "#d3d3cf"
       }
     ],
@@ -12357,18 +12357,18 @@
     "printHeight": 7,
     "safeMargin": 75,
     "status": "needs-review",
-    "reviewNote": "Approved concept only; PNG assets and photo-slot coordinates must be committed and visually verified before registering in the live manifest.",
+    "reviewNote": "Provisional inset photo slot adjusted to reduce overlap with decorative artwork. Original PNG may contain baked-in sample photography or lettering; visual review and clean artwork are required before approving downloads.",
     "featured": true,
     "photoSlots": [
       {
         "id": "photo",
         "label": "Main photo",
-        "x": 265,
-        "y": 645,
-        "width": 970,
-        "height": 1130,
+        "x": 305,
+        "y": 740,
+        "width": 890,
+        "height": 960,
         "shape": "rounded",
-        "radius": 40,
+        "radius": 24,
         "matteColor": "#d3d3cf"
       }
     ],
@@ -12389,18 +12389,18 @@
     "printHeight": 7,
     "safeMargin": 75,
     "status": "needs-review",
-    "reviewNote": "Approved concept only; PNG assets and photo-slot coordinates must be committed and visually verified before registering in the live manifest.",
+    "reviewNote": "Provisional inset photo slot adjusted to reduce overlap with decorative artwork. Original PNG may contain baked-in sample photography or lettering; visual review and clean artwork are required before approving downloads.",
     "featured": true,
     "photoSlots": [
       {
         "id": "photo",
         "label": "Main photo",
-        "x": 280,
-        "y": 660,
-        "width": 940,
-        "height": 1110,
+        "x": 335,
+        "y": 760,
+        "width": 830,
+        "height": 930,
         "shape": "rounded",
-        "radius": 40,
+        "radius": 24,
         "matteColor": "#d3d3cf"
       }
     ],
