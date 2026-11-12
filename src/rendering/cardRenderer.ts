@@ -85,13 +85,18 @@ export function renderCard(
   const placement = artworkPlacement(t, artwork.background);
   ctx.fillStyle = t.paperColor ?? "#faf8f2";
   ctx.fillRect(0, 0, t.width, t.height);
-  ctx.drawImage(
-    artwork.background,
-    placement.x,
-    placement.y,
-    placement.width,
-    placement.height,
-  );
+  if (t.solidBackground) {
+    ctx.fillStyle = t.solidBackground;
+    ctx.fillRect(0, 0, t.width, t.height);
+  } else {
+    ctx.drawImage(
+      artwork.background,
+      placement.x,
+      placement.y,
+      placement.width,
+      placement.height,
+    );
+  }
   for (const slot of t.photoSlots) {
     const photo = photos[slot.id];
     if (!photo && !slot.matteColor) continue;
