@@ -1,0 +1,457 @@
+[
+  {
+    "id": "31",
+    "name": "Winter Ribbon Letter",
+    "description": "Original watercolor single-photo Christmas card, approved by the owner.",
+    "palette": "cranberry",
+    "background": "/templates/approved-2026/winter-ribbon-letter.png",
+    "backBackground": "/templates/backs/ribbon.png",
+    "foreground": null,
+    "galleryPhoto": "/templates/sample-family.png",
+    "width": 1500,
+    "height": 2100,
+    "printWidth": 5,
+    "printHeight": 7,
+    "safeMargin": 75,
+    "status": "needs-review",
+    "reviewNote": "Owner approved visual concept. Photo mask and export need in-app pixel QA before enabling downloads.",
+    "featured": true,
+    "photoSlots": [
+      {
+        "id": "photo",
+        "label": "Main photo",
+        "x": 316,
+        "y": 671,
+        "width": 883,
+        "height": 1150,
+        "shape": "rounded",
+        "radius": 40,
+        "matteColor": "#d3d3cf"
+      }
+    ],
+    "textFields": [
+      {
+        "id": "family",
+        "label": "Family name",
+        "kind": "family",
+        "x": 280,
+        "y": 1940,
+        "width": 940,
+        "height": 68,
+        "fontFamily": "Georgia",
+        "fontSize": 48,
+        "minSize": 28,
+        "color": "#395544",
+        "align": "center",
+        "maxLength": 60,
+        "required": true,
+        "visible": true,
+        "defaultValue": "The Anderson Family"
+      },
+      {
+        "id": "year",
+        "label": "Year",
+        "kind": "year",
+        "x": 590,
+        "y": 2020,
+        "width": 320,
+        "height": 48,
+        "fontFamily": "Georgia",
+        "fontSize": 34,
+        "minSize": 24,
+        "color": "#395544",
+        "align": "center",
+        "maxLength": 8,
+        "required": false,
+        "visible": true,
+        "defaultValue": "2026"
+      }
+    ]
+  },
+  {
+    "id": "32",
+    "name": "Heirloom Arch",
+    "description": "Original watercolor single-photo Christmas card, approved by the owner.",
+    "palette": "sage",
+    "background": "/templates/approved-2026/heirloom-arch.png",
+    "backBackground": "/templates/backs/botanical.png",
+    "foreground": null,
+    "galleryPhoto": "/templates/sample-family.png",
+    "width": 1500,
+    "height": 2100,
+    "printWidth": 5,
+    "printHeight": 7,
+    "safeMargin": 75,
+    "status": "needs-review",
+    "reviewNote": "Owner approved visual concept. Photo mask and export need in-app pixel QA before enabling downloads.",
+    "featured": true,
+    "photoSlots": [
+      {
+        "id": "photo",
+        "label": "Main photo",
+        "x": 246,
+        "y": 623,
+        "width": 1000,
+        "height": 1169,
+        "shape": "polygon",
+        "radius": 0,
+        "matteColor": "#d3d3cf",
+        "points": [
+          {
+            "x": 0.0,
+            "y": 325.0
+          },
+          {
+            "x": 4.28,
+            "y": 282.58
+          },
+          {
+            "x": 17.04,
+            "y": 240.88
+          },
+          {
+            "x": 38.06,
+            "y": 200.63
+          },
+          {
+            "x": 66.99,
+            "y": 162.5
+          },
+          {
+            "x": 103.32,
+            "y": 127.15
+          },
+          {
+            "x": 146.45,
+            "y": 95.19
+          },
+          {
+            "x": 195.62,
+            "y": 67.16
+          },
+          {
+            "x": 250.0,
+            "y": 43.54
+          },
+          {
+            "x": 308.66,
+            "y": 24.74
+          },
+          {
+            "x": 370.59,
+            "y": 11.07
+          },
+          {
+            "x": 434.74,
+            "y": 2.78
+          },
+          {
+            "x": 500.0,
+            "y": 0.0
+          },
+          {
+            "x": 565.26,
+            "y": 2.78
+          },
+          {
+            "x": 629.41,
+            "y": 11.07
+          },
+          {
+            "x": 691.34,
+            "y": 24.74
+          },
+          {
+            "x": 750.0,
+            "y": 43.54
+          },
+          {
+            "x": 804.38,
+            "y": 67.16
+          },
+          {
+            "x": 853.55,
+            "y": 95.19
+          },
+          {
+            "x": 896.68,
+            "y": 127.15
+          },
+          {
+            "x": 933.01,
+            "y": 162.5
+          },
+          {
+            "x": 961.94,
+            "y": 200.63
+          },
+          {
+            "x": 982.96,
+            "y": 240.88
+          },
+          {
+            "x": 995.72,
+            "y": 282.58
+          },
+          {
+            "x": 1000.0,
+            "y": 325.0
+          },
+          {
+            "x": 1000,
+            "y": 1169
+          },
+          {
+            "x": 0,
+            "y": 1169
+          }
+        ]
+      }
+    ],
+    "textFields": [
+      {
+        "id": "family",
+        "label": "Family name",
+        "kind": "family",
+        "x": 280,
+        "y": 1940,
+        "width": 940,
+        "height": 68,
+        "fontFamily": "Georgia",
+        "fontSize": 48,
+        "minSize": 28,
+        "color": "#395544",
+        "align": "center",
+        "maxLength": 60,
+        "required": true,
+        "visible": true,
+        "defaultValue": "The Anderson Family"
+      },
+      {
+        "id": "year",
+        "label": "Year",
+        "kind": "year",
+        "x": 590,
+        "y": 2020,
+        "width": 320,
+        "height": 48,
+        "fontFamily": "Georgia",
+        "fontSize": 34,
+        "minSize": 24,
+        "color": "#395544",
+        "align": "center",
+        "maxLength": 8,
+        "required": false,
+        "visible": true,
+        "defaultValue": "2026"
+      }
+    ]
+  },
+  {
+    "id": "33",
+    "name": "Midnight Lights",
+    "description": "Original watercolor single-photo Christmas card, approved by the owner.",
+    "palette": "navy",
+    "background": "/templates/approved-2026/midnight-lights.png",
+    "backBackground": "/templates/backs/evergreen.png",
+    "foreground": null,
+    "galleryPhoto": "/templates/sample-family.png",
+    "width": 1500,
+    "height": 2100,
+    "printWidth": 5,
+    "printHeight": 7,
+    "safeMargin": 75,
+    "status": "needs-review",
+    "reviewNote": "Owner approved visual concept. Photo mask and export need in-app pixel QA before enabling downloads.",
+    "featured": true,
+    "photoSlots": [
+      {
+        "id": "photo",
+        "label": "Main photo",
+        "x": 269,
+        "y": 505,
+        "width": 951,
+        "height": 1235,
+        "shape": "rounded",
+        "radius": 25,
+        "matteColor": "#d3d3cf"
+      }
+    ],
+    "textFields": [
+      {
+        "id": "family",
+        "label": "Family name",
+        "kind": "family",
+        "x": 280,
+        "y": 1940,
+        "width": 940,
+        "height": 68,
+        "fontFamily": "Georgia",
+        "fontSize": 48,
+        "minSize": 28,
+        "color": "#395544",
+        "align": "center",
+        "maxLength": 60,
+        "required": true,
+        "visible": true,
+        "defaultValue": "The Anderson Family"
+      },
+      {
+        "id": "year",
+        "label": "Year",
+        "kind": "year",
+        "x": 590,
+        "y": 2020,
+        "width": 320,
+        "height": 48,
+        "fontFamily": "Georgia",
+        "fontSize": 34,
+        "minSize": 24,
+        "color": "#395544",
+        "align": "center",
+        "maxLength": 8,
+        "required": false,
+        "visible": true,
+        "defaultValue": "2026"
+      }
+    ]
+  },
+  {
+    "id": "34",
+    "name": "Cranberry Candy Stripes",
+    "description": "Original watercolor single-photo Christmas card, approved by the owner.",
+    "palette": "cranberry",
+    "background": "/templates/approved-2026/cranberry-candy-stripes.png",
+    "backBackground": "/templates/backs/berry.png",
+    "foreground": null,
+    "galleryPhoto": "/templates/sample-family.png",
+    "width": 1500,
+    "height": 2100,
+    "printWidth": 5,
+    "printHeight": 7,
+    "safeMargin": 75,
+    "status": "needs-review",
+    "reviewNote": "Owner approved visual concept. Photo mask and export need in-app pixel QA before enabling downloads.",
+    "featured": true,
+    "photoSlots": [
+      {
+        "id": "photo",
+        "label": "Main photo",
+        "x": 242,
+        "y": 667,
+        "width": 1003,
+        "height": 914,
+        "shape": "rounded",
+        "radius": 42,
+        "matteColor": "#d3d3cf"
+      }
+    ],
+    "textFields": [
+      {
+        "id": "family",
+        "label": "Family name",
+        "kind": "family",
+        "x": 280,
+        "y": 1940,
+        "width": 940,
+        "height": 68,
+        "fontFamily": "Georgia",
+        "fontSize": 48,
+        "minSize": 28,
+        "color": "#395544",
+        "align": "center",
+        "maxLength": 60,
+        "required": true,
+        "visible": true,
+        "defaultValue": "The Anderson Family"
+      },
+      {
+        "id": "year",
+        "label": "Year",
+        "kind": "year",
+        "x": 590,
+        "y": 2020,
+        "width": 320,
+        "height": 48,
+        "fontFamily": "Georgia",
+        "fontSize": 34,
+        "minSize": 24,
+        "color": "#395544",
+        "align": "center",
+        "maxLength": 8,
+        "required": false,
+        "visible": true,
+        "defaultValue": "2026"
+      }
+    ]
+  },
+  {
+    "id": "35",
+    "name": "Sage Scandi Stripes",
+    "description": "Original watercolor single-photo Christmas card, approved by the owner.",
+    "palette": "sage",
+    "background": "/templates/approved-2026/sage-scandi-stripes.png",
+    "backBackground": "/templates/backs/botanical.png",
+    "foreground": null,
+    "galleryPhoto": "/templates/sample-family.png",
+    "width": 1500,
+    "height": 2100,
+    "printWidth": 5,
+    "printHeight": 7,
+    "safeMargin": 75,
+    "status": "needs-review",
+    "reviewNote": "Owner approved visual concept. Photo mask and export need in-app pixel QA before enabling downloads.",
+    "featured": true,
+    "photoSlots": [
+      {
+        "id": "photo",
+        "label": "Main photo",
+        "x": 267,
+        "y": 620,
+        "width": 948,
+        "height": 1073,
+        "shape": "rounded",
+        "radius": 25,
+        "matteColor": "#d3d3cf"
+      }
+    ],
+    "textFields": [
+      {
+        "id": "family",
+        "label": "Family name",
+        "kind": "family",
+        "x": 280,
+        "y": 1940,
+        "width": 940,
+        "height": 68,
+        "fontFamily": "Georgia",
+        "fontSize": 48,
+        "minSize": 28,
+        "color": "#395544",
+        "align": "center",
+        "maxLength": 60,
+        "required": true,
+        "visible": true,
+        "defaultValue": "The Anderson Family"
+      },
+      {
+        "id": "year",
+        "label": "Year",
+        "kind": "year",
+        "x": 590,
+        "y": 2020,
+        "width": 320,
+        "height": 48,
+        "fontFamily": "Georgia",
+        "fontSize": 34,
+        "minSize": 24,
+        "color": "#395544",
+        "align": "center",
+        "maxLength": 8,
+        "required": false,
+        "visible": true,
+        "defaultValue": "2026"
+      }
+    ]
+  }
+]
