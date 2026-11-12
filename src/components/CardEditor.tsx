@@ -5,6 +5,7 @@ import { effectivePpi, initialCrop, type Crop } from "../rendering/photoCrop";
 import { type RenderResult } from "../rendering/cardRenderer";
 import { pngBlob, saveBlob } from "../rendering/exportPng";
 import type { FontSizes } from "../rendering/fontSizing";
+import type { FoldedPaper } from "../rendering/exportFoldedPdf";
 import { CardPreview } from "./CardPreview";
 import { PhotoControls } from "./PhotoControls";
 import { PersonalizationPanel } from "./PersonalizationPanel";
@@ -150,28 +151,40 @@ export function CardEditor({
       if (alive.current) setPending(false);
     }
   }
-  async function download(format: "front" | "back" | "pdf") {
+  async function download(
+    format: "front" | "back" | "pdf" | "folded",
+    paper: FoldedPaper = "a4",
+  ) {
     if (busy || pending) return;
     setBusy(format);
     setError("");
     setMessage("");
     try {
       const blob =
-        format === "pdf"
-          ? (await import("../rendering/exportPdf")).pdfBlob(
+        format === "folded"
+          ? (await import("../rendering/exportFoldedPdf")).foldedPdfBlob(
               await exportBothSides(front, session),
+              paper,
             )
-          : await pngBlob(await exportSide(front, session, format));
+          : format === "pdf"
+            ? (await import("../rendering/exportPdf")).pdfBlob(
+                await exportBothSides(front, session),
+              )
+            : await pngBlob(await exportSide(front, session, format));
       saveBlob(
         blob,
-        format === "pdf"
-          ? `christmas-${front.id}-front-and-back.pdf`
-          : `christmas-${front.id}-${format}.png`,
+        format === "folded"
+          ? `christmas-${front.id}-folded-${paper}.pdf`
+          : format === "pdf"
+            ? `christmas-${front.id}-front-and-back.pdf`
+            : `christmas-${front.id}-${format}.png`,
       );
       setMessage(
-        format === "pdf"
-          ? "Your two-page PDF is ready. Page 1: front. Page 2: back."
-          : `Your ${format} PNG is ready.`,
+        format === "folded"
+          ? "Your folded PDF is ready. Page 1: outside (back left, front right). Page 2: blank inside. Print at 100%, trim if needed, and fold to 5 × 7 inches."
+          : format === "pdf"
+            ? "Your two-page PDF is ready. Page 1: front. Page 2: back."
+            : `Your ${format} PNG is ready.`,
       );
     } catch (e) {
       const message = (e as Error).message;
