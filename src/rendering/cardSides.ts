@@ -6,6 +6,12 @@ import type { FontSizes } from "./fontSizing";
 import type { FontFamilies } from "./fonts";
 export type CardSide = "front" | "back";
 export type BackLayout = "message" | "collage";
+export type BackStyle = "matching" | "decorative" | "blank";
+const paletteColors: Record<Template["palette"], string> = {
+  cranberry: "#f7e9df", sage: "#e5ede3", navy: "#102a48", blue: "#dce9f2",
+  forest: "#183e35", ginger: "#f5e5d2", woodland: "#e7e6d9", rust: "#f2dfd0",
+  pastel: "#f7edf0", berry: "#f2e8e7",
+};
 export interface Session {
   photos: Record<string, ImageBitmap | undefined>;
   crops: Record<string, Crop>;
@@ -13,6 +19,7 @@ export interface Session {
   fontSizes: FontSizes;
   fontFamilies: FontFamilies;
   backLayouts?: Record<string, BackLayout>;
+  backStyles?: Record<string, BackStyle>;
 }
 export function preferenceKey(id: string, side: CardSide, field: string) {
   return side === "front" ? `${id}:${field}` : `${id}:back:${field}`;
@@ -63,6 +70,7 @@ export function sideTemplate(
   front: Template,
   side: CardSide,
   layout: BackLayout = "message",
+  style: BackStyle = "matching",
 ): Template {
   if (side === "front") return front;
   const collage = layout === "collage";
@@ -72,6 +80,7 @@ export function sideTemplate(
     name: `${front.name} · Back`,
     background: front.backBackground ?? "/templates/backs/evergreen.png",
     backgroundFit: "exact",
+    solidBackground: style === "decorative" ? undefined : style === "blank" ? "#ffffff" : paletteColors[front.palette],
     foreground: null,
     photoSlots: collage
       ? [
@@ -107,7 +116,7 @@ export function sideTemplate(
           },
         ]
       : [],
-    textFields: collage
+    textFields: style === "blank" ? [] : collage
       ? [
           field(
             "greeting",
@@ -175,7 +184,7 @@ export function sideInput(
   side: CardSide,
   artwork: Artwork,
 ): RenderInput {
-  const t = sideTemplate(front, side, session.backLayouts?.[front.id]);
+  const t = sideTemplate(front, side, session.backLayouts?.[front.id], session.backStyles?.[front.id]);
   return {
     template: t,
     artwork,
