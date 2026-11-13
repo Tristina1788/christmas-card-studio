@@ -19,7 +19,10 @@ function TemplateArtwork({ template: t }: { template: Template }) {
         </span>
       </div>
     );
-  return t.galleryPhoto ? (
+  // Unverified flattened artwork can contain a baked-in sample portrait.
+  // Do not composite another gallery photo until the artwork is separated
+  // into a clean background and foreground frame overlay.
+  return t.galleryPhoto && t.status === "approved" ? (
     <GalleryCard template={t} onFailure={() => setFailed(true)} />
   ) : (
     <img
