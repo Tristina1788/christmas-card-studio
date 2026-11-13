@@ -11,7 +11,12 @@ export default tseslint.config(
       "work",
       "test-results",
       "playwright-report",
+      "src/main.ts", // Unused legacy canvas prototype; app entry is src/main.tsx
     ],
+  },
+  {
+    files: ["**/*.mjs"],
+    languageOptions: { globals: globals.node },
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
